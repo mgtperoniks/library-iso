@@ -1,13 +1,4 @@
-# STAGE 1: Build Assets (Node.js)
-FROM node:20-alpine AS assets-builder
-WORKDIR /app
-COPY package*.json vite.config.js ./
-RUN npm install
-COPY resources ./resources
-COPY public ./public
-RUN npm run build
-
-# STAGE 2: PHP Application
+# STAGE 1: PHP Application
 FROM php:8.2-fpm-alpine
 
 # Arguments defined in docker-compose.yml
@@ -38,11 +29,8 @@ RUN mkdir -p /var/www && chown -R $user:$user /var/www
 # Set working directory
 WORKDIR /var/www
 
-# Copy application files
+# Copy application files (termasuk folder public yang berisi aset)
 COPY --chown=$user:$user . .
-
-# Copy built assets from Stage 1
-COPY --from=assets-builder --chown=$user:$user /app/public/build ./public/build
 
 USER $user
 
