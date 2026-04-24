@@ -35,7 +35,7 @@ class DocumentVersionController extends Controller
             'version_label' => ['required', 'string', 'max:50'],
 
             // wajib salah satu: file atau pasted_text
-            'file'         => ['required_without:pasted_text', 'nullable', 'file', 'mimes:pdf,doc,docx', 'max:51200'],
+            'file'         => ['required_without:pasted_text', 'nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx', 'max:51200'],
             'pasted_text'  => ['required_without:file', 'nullable', 'string', 'max:500000'],
 
             'change_note'  => ['nullable', 'string', 'max:2000'],

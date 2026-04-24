@@ -205,8 +205,8 @@
 </style>
 
 @push('scripts')
-  <!-- Chart.js (CDN) — replace with local file if offline -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Chart.js (LOCAL) -->
+  <script src="{{ asset('vendor/chartjs/chart.umd.min.js') }}"></script>
 
   <script>
   document.addEventListener('DOMContentLoaded', function(){
@@ -284,67 +284,3 @@
 @endpush
 
 @endsection
-<!-- Chart.js (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  // debug: tampilkan data di console (bisa kamu lihat di DevTools)
-  console.log('weeks', @json($weeks ?? []));
-  console.log('counts', @json($counts ?? []));
-  console.log('donut', { pending: @json($pending ?? 0), approved: @json($approved ?? 0), rejected: @json($rejected ?? 0), other: @json($other ?? 0) });
-
-  // LINE chart
-  const weeks = @json($weeks ?? []);
-  const counts = @json($counts ?? []);
-  if (weeks.length && document.getElementById('versionsChart')) {
-    const ctx = document.getElementById('versionsChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: weeks,
-        datasets: [{
-          label: 'Docs/week',
-          data: counts,
-          fill: true,
-          backgroundColor: 'rgba(14,165,233,0.08)',
-          borderColor: '#0ea5e9',
-          tension: 0.35,
-          pointRadius: 3,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        plugins: { legend: { display:false }},
-        scales: {
-          x: { grid:{ display:false }, ticks:{ color:'#64748b', maxTicksLimit:12 }},
-          y: { beginAtZero:true, grid:{ color:'rgba(15,23,42,0.06)' }, ticks:{ stepSize:1, color:'#64748b' } }
-        },
-        maintainAspectRatio:false, responsive:true
-      }
-    });
-  }
-
-  // DONUT chart
-  const donutCtx = document.getElementById('statusDonut')?.getContext?.('2d');
-  if (donutCtx) {
-    new Chart(donutCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Pending','Approved','Rejected','Other'],
-        datasets: [{
-          data: [@json($pending ?? 0), @json($approved ?? 0), @json($rejected ?? 0), @json($other ?? 0)],
-          backgroundColor: ['#3b82f6','#16a34a','#ef4444','#9ca3af'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        plugins: { legend: { position:'right', labels:{ color:'#64748b', boxWidth:12 } } },
-        maintainAspectRatio:false,
-        responsive:true,
-        cutout: '70%'
-      }
-    });
-  }
-});
-</script>

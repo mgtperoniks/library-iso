@@ -11,3 +11,6 @@ node_modules/
 npm-debug.log
 yarn-error.log
 /imports/
+deploy_key*
+*.pub
+gen_key.bat
