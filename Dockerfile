@@ -1,5 +1,5 @@
 # STAGE 1: PHP Application
-FROM php:8.2-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # Arguments defined in docker-compose.yml
 ARG user=laravel
