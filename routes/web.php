@@ -213,12 +213,4 @@ Route::get('/departments', [DepartmentController::class, 'index'])->name('depart
 Route::get('/departments/{department}', [DepartmentController::class, 'show'])
     ->whereNumber('department')->name('departments.show');
 
-/*
-|--------------------------------------------------------------------------
-| Optional extra ISO routes (external file)
-|--------------------------------------------------------------------------
-*/
-$isoRoutes = base_path('routes/iso_documents.php');
-if (file_exists($isoRoutes)) {
-    require $isoRoutes;
-}
+// Extra routes removed for consolidation
