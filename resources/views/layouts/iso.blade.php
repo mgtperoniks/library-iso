@@ -163,6 +163,16 @@
         @endif
     @endauth
 
+    {{-- Review Program — kabag, admin, mr, director --}}
+    @auth
+        @if(auth()->user()->hasAnyRole(['kabag','admin','mr','director']))
+            <a href="{{ route('reviews.due') }}"
+               class="{{ request()->routeIs('reviews.*') ? 'active' : '' }}">
+               Review Program
+            </a>
+        @endif
+    @endauth
+
     {{-- Approval Queue — ONLY MR & DIRECTOR --}}
     @auth
         @if(auth()->user()->hasAnyRole(['mr','director']))

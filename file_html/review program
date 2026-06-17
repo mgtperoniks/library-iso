@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Review Program | QMS Navigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-highest": "#e1e2ed",
+                        "background": "#faf8ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-surface-variant": "#434655",
+                        "secondary-fixed": "#d5e3fc",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#515f74",
+                        "surface-container-high": "#e7e7f3",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#943700",
+                        "surface-container": "#ededf9",
+                        "inverse-primary": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0053db",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-fixed": "#00174b",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-surface": "#2e3039",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-container": "#d5e3fc",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "surface-dim": "#d9d9e5",
+                        "primary": "#004ac6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#faf8ff",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191b23",
+                        "on-secondary-container": "#57657a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-container": "#2563eb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "code-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-row {
+            background-color: #f3f3fe; /* surface-container-low */
+            border-left: 2px solid #004ac6; /* primary */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-lg h-16">
+<div class="flex items-center gap-md">
+<span class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed-dim">QMS Navigator</span>
+<div class="hidden md:flex ml-lg gap-md">
+<nav class="flex items-center gap-sm">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low px-sm py-xs transition-colors font-label-md text-label-md" href="#">Dashboard</a>
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary px-sm py-xs font-label-md text-label-md" href="#">Review Program</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low px-sm py-xs transition-colors font-label-md text-label-md" href="#">Audits</a>
+</nav>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-xl pr-md py-xs bg-surface-container-low border border-outline-variant rounded-lg text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none w-64" placeholder="Search documents..." type="text"/>
+</div>
+<button class="flex items-center gap-xs bg-primary text-on-primary px-md py-xs rounded hover:opacity-80 transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="font-label-md text-label-md">New Document</span>
+</button>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">settings</span>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL5PgZBNbnaTlgxEbZ8jR7uE3YlckkP1F6RB8qcXAweNfzewL701XheI44anMrBzAsdNolVPjCCPck8C3V8qVTaohBqGUSy7asNLZK9OUn3yK4Loyj_SvgBsUENSCXTEG97wBXleM1A3Hlhy5AYk5twhYoX_r5zTXQM-kBbGklK8Kf_pb7m1ZHF66oJF9QQ2J5OIpauqmKjMAOInjA04bPr_oOdkCwCGKzDL9KeaMc117knkXRTfTeq8nvuInogurDS_83FgsB9cIM"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full py-md overflow-y-auto bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant fixed left-0 top-16 w-sidebar-width h-[calc(100vh-64px)]">
+<div class="px-md mb-lg">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="text-label-md font-label-md font-bold text-on-surface dark:text-on-surface">ISO 9001:2015</p>
+<p class="text-body-sm font-body-sm text-outline">Manufacturing Corp</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-sm">
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-md font-label-md">Home</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-label-md font-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-sm bg-secondary-container dark:bg-secondary-container text-on-secondary-container dark:text-on-secondary-container border-l-2 border-primary px-md py-sm rounded" href="#">
+<span class="material-symbols-outlined">edit_document</span>
+<span class="text-label-md font-label-md">Revisions</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-label-md font-label-md">Records</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">verified</span>
+<span class="text-label-md font-label-md">Quality</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">settings_applications</span>
+<span class="text-label-md font-label-md">Administration</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-md border-t border-outline-variant">
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">cloud_done</span>
+<span class="text-label-md font-label-md">System Status</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant dark:text-on-surface-variant px-md py-sm hover:bg-surface-variant transition-colors rounded" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-md font-label-md">Help Center</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-sidebar-width overflow-y-auto bg-surface p-lg">
+<div class="max-w-7xl mx-auto">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface">Review Program</h1>
+<p class="text-body-sm text-on-surface-variant">ISO 9001 Clause 7.5.3 | Control of Documented Information</p>
+</div>
+<div class="flex gap-md">
+<div class="flex flex-col items-center px-lg py-sm bg-white border border-outline-variant rounded-lg">
+<span class="text-label-md text-outline">Total Due</span>
+<span class="text-headline-sm font-bold text-tertiary">14</span>
+</div>
+<div class="flex flex-col items-center px-lg py-sm bg-white border border-outline-variant rounded-lg">
+<span class="text-label-md text-outline">Overdue</span>
+<span class="text-headline-sm font-bold text-error">3</span>
+</div>
+</div>
+</div>
+<!-- Filters and Search -->
+<div class="bg-white border border-outline-variant p-md flex flex-wrap gap-md items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="text-label-md text-on-surface-variant">Filter by:</span>
+<select class="bg-surface-container-low border border-outline-variant text-body-sm rounded px-sm py-xs outline-none">
+<option>All Departments</option>
+<option>Quality Assurance</option>
+<option>Manufacturing</option>
+<option>Human Resources</option>
+</select>
+</div>
+<div class="flex items-center gap-sm">
+<select class="bg-surface-container-low border border-outline-variant text-body-sm rounded px-sm py-xs outline-none">
+<option>All Statuses</option>
+<option>Current</option>
+<option>Review Due</option>
+<option>Overdue</option>
+</select>
+</div>
+<button class="ml-auto flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="text-label-md">Advanced Search</span>
+</button>
+</div>
+<!-- Document Review Table -->
+<div class="bg-white border border-outline-variant rounded-lg overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline">Document</th>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline">Department</th>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline text-center">Last Review</th>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline text-center">Next Review</th>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline">Status</th>
+<th class="px-md py-sm text-label-md font-bold uppercase tracking-wider text-outline text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1: Overdue -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<div>
+<p class="font-label-md text-on-surface">SOP-ENG-042: Calibration Controls</p>
+<p class="text-[12px] text-outline font-code-sm">v4.2.1</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md text-body-sm">Engineering</td>
+<td class="px-md py-md text-body-sm text-center">2023-01-15</td>
+<td class="px-md py-md text-body-sm text-center font-bold text-error">2024-01-15</td>
+<td class="px-md py-md">
+<span class="px-sm py-xs bg-error/10 text-error rounded text-[11px] font-bold uppercase">Overdue</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="bg-primary text-on-primary px-md py-xs rounded text-label-md hover:opacity-90 transition-all shadow-sm">Start Review</button>
+</td>
+</tr>
+<!-- Row 2: In Progress State -->
+<tr class="active-row border-l-4">
+<td class="px-md py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+<div>
+<p class="font-label-md text-on-surface">POL-QA-001: Quality Policy</p>
+<p class="text-[12px] text-outline font-code-sm">v2.0.0</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md text-body-sm">Quality Assurance</td>
+<td class="px-md py-md text-body-sm text-center">2023-11-20</td>
+<td class="px-md py-md text-body-sm text-center font-bold text-tertiary">2024-05-20</td>
+<td class="px-md py-md">
+<span class="px-sm py-xs bg-tertiary/10 text-tertiary rounded text-[11px] font-bold uppercase">Review Due</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center justify-end gap-sm">
+<p class="text-[11px] text-outline italic mr-sm">Decision pending...</p>
+<button class="bg-surface-container-lowest border border-outline text-on-surface px-sm py-xs rounded text-[12px] hover:bg-white transition-colors">Still Relevant</button>
+<button class="bg-primary text-on-primary px-sm py-xs rounded text-[12px] hover:opacity-90 transition-all">Needs Revision</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Current -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<div>
+<p class="font-label-md text-on-surface">WI-MFG-012: Assembly Line Safety</p>
+<p class="text-[12px] text-outline font-code-sm">v1.1.0</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md text-body-sm">Manufacturing</td>
+<td class="px-md py-md text-body-sm text-center">2024-03-10</td>
+<td class="px-md py-md text-body-sm text-center">2025-03-10</td>
+<td class="px-md py-md">
+<span class="px-sm py-xs bg-green-100 text-green-700 rounded text-[11px] font-bold uppercase">Current</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:underline text-label-md">View Details</button>
+</td>
+</tr>
+<!-- Row 4: Review Due -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<div>
+<p class="font-label-md text-on-surface">FRM-HR-005: Employee Induction</p>
+<p class="text-[12px] text-outline font-code-sm">v3.0.4</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md text-body-sm">Human Resources</td>
+<td class="px-md py-md text-body-sm text-center">2023-05-15</td>
+<td class="px-md py-md text-body-sm text-center font-bold text-tertiary">2024-05-15</td>
+<td class="px-md py-md">
+<span class="px-sm py-xs bg-tertiary/10 text-tertiary rounded text-[11px] font-bold uppercase">Review Due</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="bg-primary text-on-primary px-md py-xs rounded text-label-md hover:opacity-90 transition-all">Start Review</button>
+</td>
+</tr>
+<!-- Row 5: Current -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">description</span>
+<div>
+<p class="font-label-md text-on-surface">SOP-PUR-002: Vendor Assessment</p>
+<p class="text-[12px] text-outline font-code-sm">v5.0.0</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md text-body-sm">Procurement</td>
+<td class="px-md py-md text-body-sm text-center">2024-01-22</td>
+<td class="px-md py-md text-body-sm text-center">2025-01-22</td>
+<td class="px-md py-md">
+<span class="px-sm py-xs bg-green-100 text-green-700 rounded text-[11px] font-bold uppercase">Current</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:underline text-label-md">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Bento Style Secondary Stats/Info -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mt-lg">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg col-span-2">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-label-md text-on-surface">Recent Review Activity</h3>
+<button class="text-primary text-xs hover:underline">View History</button>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-md p-sm bg-surface-container-low rounded">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<div class="flex-1">
+<p class="text-body-sm font-bold text-on-surface">Still Relevant: SOP-QA-102</p>
+<p class="text-xs text-outline">Confirmed by John Doe (Lead Auditor) • 2 hours ago</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="flex items-center gap-md p-sm bg-surface-container-low rounded">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="flex-1">
+<p class="text-body-sm font-bold text-on-surface">Needs Revision: WI-PROD-005</p>
+<p class="text-xs text-outline">Escalated by Sarah Chen • 5 hours ago</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="relative bg-surface-container-highest border border-outline-variant p-md rounded-lg overflow-hidden flex flex-col justify-end min-h-[200px]">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 C20,80 40,90 60,70 S80,30 100,0" fill="transparent" stroke="currentColor" stroke-width="2"></path>
+</svg>
+</div>
+<h3 class="font-label-md text-on-surface mb-xs">Program Health</h3>
+<p class="text-display-lg font-bold text-primary">94.2%</p>
+<p class="text-body-sm text-on-surface-variant">Document compliance score is up 2.4% from last quarter.</p>
+<button class="mt-md w-full bg-white border border-outline-variant py-xs text-label-md font-bold text-on-surface hover:bg-surface-container-low">Download Audit Export</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline-variant docked full-width bottom-0 flex justify-between items-center w-full px-lg py-sm mt-auto">
+<div class="flex items-center gap-md">
+<span class="text-label-md font-label-md font-semibold text-secondary">QMS Compliance Suite</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">© 2024. v2.4.1</span>
+</div>
+<div class="flex items-center gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Documentation</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Terms of Service</a>
+</div>
+</footer>
+<!-- Micro-interactions Script -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 100);
+            });
+        });
+    </script>
+</body></html>

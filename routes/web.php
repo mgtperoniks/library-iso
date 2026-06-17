@@ -10,6 +10,7 @@ use App\Http\Controllers\DocumentVersionController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RecycleController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +33,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/login',     [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login',    [AuthController::class, 'login'])->name('login.attempt');
 
-    Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
+    // Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
+    // Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
 });
 
 /*
@@ -122,7 +123,7 @@ Route::middleware('auth')->group(function () {
         Route::put('{version}',                [DocumentVersionController::class, 'update'])
             ->whereNumber('version')->name('update');
 
-        Route::get('{version}/choose-compare', [DocumentVersionController::class, 'chooseCompare'])
+        Route::get('{version}/choose-compare', [DocumentController::class, 'chooseCompare'])
             ->whereNumber('version')->name('chooseCompare');
 
         // Mark version as trashed (controller handles authorization)
@@ -197,6 +198,17 @@ Route::middleware('auth')->group(function () {
         // HTML form compatibility
         Route::post('{version}/destroy',         [RecycleController::class, 'destroy'])
             ->whereNumber('version')->name('destroy.post');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Review Program
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('due',                       [ReviewController::class, 'due'])->name('due');
+        Route::post('{document}/still-relevant', [ReviewController::class, 'stillRelevant'])->name('stillRelevant');
+        Route::post('{document}/needs-revision', [ReviewController::class, 'needsRevision'])->name('needsRevision');
     });
 });
 

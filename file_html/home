@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Peroni Quality Hub | ISO 2.0 Management Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        /* Custom scrollbar for enterprise feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-highest": "#e1e2ed",
+                        "background": "#faf8ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-surface-variant": "#434655",
+                        "secondary-fixed": "#d5e3fc",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#515f74",
+                        "surface-container-high": "#e7e7f3",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#943700",
+                        "surface-container": "#ededf9",
+                        "inverse-primary": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0053db",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-fixed": "#00174b",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-surface": "#2e3039",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-container": "#d5e3fc",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "surface-dim": "#d9d9e5",
+                        "primary": "#004ac6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#faf8ff",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191b23",
+                        "on-secondary-container": "#57657a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-container": "#2563eb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "code-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] z-50 flex flex-col py-md bg-surface border-r border-outline-variant transition-all duration-300 ease-in-out">
+<div class="px-md mb-xl">
+<h1 class="font-display-lg text-display-lg font-bold text-primary">Peroni Quality Hub</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">ISO 9001:2015</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active State: Dashboard -->
+<a class="flex items-center px-md py-sm text-primary border-l-2 border-primary bg-secondary-container transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="description">description</span>
+<span>Document Control</span>
+</a>
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="verified_user">verified_user</span>
+<span>Quality Management</span>
+</a>
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="gavel">gavel</span>
+<span>Compliance</span>
+</a>
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+<span>Administration</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md space-y-1">
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] z-40 h-16 bg-surface-bright border-b border-outline-variant flex justify-between items-center px-lg transition-all duration-200">
+<div class="flex items-center gap-md">
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Dashboard</h2>
+<div class="relative ml-lg">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-outline">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</span>
+<input class="block w-64 pl-10 pr-3 py-1.5 border border-outline rounded-lg bg-surface text-body-sm focus:ring-1 focus:ring-primary focus:border-primary" placeholder="Search ISO documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-sm px-md py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:brightness-110 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Quick Action</span>
+</button>
+<div class="flex items-center gap-sm ml-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right">
+<p class="font-label-md text-label-md leading-none">Management Rep</p>
+<p class="text-[11px] text-on-surface-variant">Quality Lead</p>
+</div>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a middle-aged male quality assurance manager wearing a crisp white dress shirt and dark glasses. He has a clean, approachable appearance. The background is a blurred corporate office setting with soft, natural daylight, maintaining a professional and serious tone suitable for an enterprise software interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUrowvGZDQ-ymYqsj6Op5iYUD0cGyEuKiYlSLNWNNGyXKz-1ia8bkbUvXLDoorDkpzDq1ig7SsDIxnIuYdOA4mlwzam2ZWfiM36nBBbSq3TzUDZo53J1L13STHw6P1FtTKiQotCFO_oT7ftUxHNEmddr-ft_M4-Ud0FkTi304C-jq-aznl-OeIWKUGzksDQqWLp5UiDPZrn89R1M7tAHDfNQiNhJMkAdh2er4HpL06Gp0muLjfJ7oUNwWhNJBS0hpinhPT1rXLC8lb"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-16 min-h-screen">
+<div class="p-lg max-w-[1440px] mx-auto">
+<!-- Summary Section: Metric Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-lg">
+<div class="bg-surface-container-lowest border border-outline-variant p-md flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-md text-label-md">Total Active Documents</span>
+<span class="material-symbols-outlined text-primary opacity-50" data-icon="description">description</span>
+</div>
+<div class="mt-md">
+<span class="text-[32px] font-bold text-on-surface">1,248</span>
+<div class="flex items-center gap-xs text-[12px] text-primary mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+<span>+12 from last audit</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-md text-label-md">Pending Approvals</span>
+<span class="material-symbols-outlined text-primary opacity-50" data-icon="pending_actions">pending_actions</span>
+</div>
+<div class="mt-md">
+<span class="text-[32px] font-bold text-on-surface">14</span>
+<div class="flex items-center gap-xs text-[12px] text-tertiary mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="timer">timer</span>
+<span>3 critical urgency</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-md text-label-md">Documents Due Review</span>
+<span class="material-symbols-outlined text-primary opacity-50" data-icon="calendar_today">calendar_today</span>
+</div>
+<div class="mt-md">
+<span class="text-[32px] font-bold text-on-surface">28</span>
+<div class="flex items-center gap-xs text-[12px] text-on-surface-variant mt-1">
+<span>Target: End of Month</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md flex flex-col justify-between group hover:border-error transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-md text-label-md">Overdue Reviews</span>
+<span class="material-symbols-outlined text-error opacity-50" data-icon="error_outline">error_outline</span>
+</div>
+<div class="mt-md">
+<span class="text-[32px] font-bold text-error">5</span>
+<div class="flex items-center gap-xs text-[12px] text-error mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="priority_high">priority_high</span>
+<span>Action Required</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Layout Grid for Content Tables -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
+<!-- Documents Requiring Attention -->
+<section class="xl:col-span-2 space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Documents Requiring Attention</h3>
+<a class="text-primary font-label-md text-label-md hover:underline flex items-center gap-xs" href="#">
+                            View All <span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-md text-[11px] uppercase tracking-wider border-b border-outline-variant">
+<th class="px-md py-sm">Ref ID</th>
+<th class="px-md py-sm">Document Name</th>
+<th class="px-md py-sm">Priority</th>
+<th class="px-md py-sm">Status</th>
+<th class="px-md py-sm">Days Open</th>
+<th class="px-md py-sm text-right">Action</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="px-md py-md font-code-sm text-code-sm">SOP-QA-042</td>
+<td class="px-md py-md">
+<p class="font-semibold">Vendor Quality Audit Protocol</p>
+<p class="text-[12px] text-on-surface-variant">Version 4.1.0</p>
+</td>
+<td class="px-md py-md">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded-full text-[11px] font-bold">CRITICAL</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>In Review</span>
+</div>
+</td>
+<td class="px-md py-md text-on-surface-variant">12 Days</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md">Process</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="px-md py-md font-code-sm text-code-sm">POL-HR-012</td>
+<td class="px-md py-md">
+<p class="font-semibold">Personnel Training & Competence Policy</p>
+<p class="text-[12px] text-on-surface-variant">Annual Renewal</p>
+</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[11px] font-bold">MEDIUM</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>Drafting</span>
+</div>
+</td>
+<td class="px-md py-md text-on-surface-variant">5 Days</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md">Edit</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="px-md py-md font-code-sm text-code-sm">WI-OPS-099</td>
+<td class="px-md py-md">
+<p class="font-semibold">Canning Line 4 Sterilization Work Instruction</p>
+<p class="text-[12px] text-on-surface-variant">Major Update</p>
+</td>
+<td class="px-md py-md">
+<span class="bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded-full text-[11px] font-bold">HIGH</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Approval Sent</span>
+</div>
+</td>
+<td class="px-md py-md text-on-surface-variant">2 Days</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md">Remind</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-md py-md font-code-sm text-code-sm">ISO-9001-CL</td>
+<td class="px-md py-md">
+<p class="font-semibold">Clause 7.5 Internal Audit Checklist</p>
+<p class="text-[12px] text-on-surface-variant">Q3 Update</p>
+</td>
+<td class="px-md py-md">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full text-[11px] font-bold">MEDIUM</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>Overdue</span>
+</div>
+</td>
+<td class="px-md py-md text-on-surface-variant">45 Days</td>
+<td class="px-md py-md text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md">Reassign</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Recent Activity Timeline -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Recent Activity</h3>
+<button class="text-on-surface-variant p-1 hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md">
+<div class="relative space-y-lg before:absolute before:left-[11px] before:top-2 before:h-[calc(100%-16px)] before:w-[2px] before:bg-outline-variant">
+<!-- Activity Item -->
+<div class="relative pl-lg flex flex-col gap-xs">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-surface flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex justify-between items-start">
+<p class="font-body-sm text-body-sm"><span class="font-bold">M. Rossi</span> approved <span class="text-primary cursor-pointer hover:underline">SOP-QA-039</span></p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">14:02</span>
+</div>
+<p class="text-[12px] text-on-surface-variant italic">"All findings from the previous audit have been addressed."</p>
+</div>
+<!-- Activity Item -->
+<div class="relative pl-lg flex flex-col gap-xs">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-surface flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[18px] text-tertiary" data-icon="publish">publish</span>
+</div>
+<div class="flex justify-between items-start">
+<p class="font-body-sm text-body-sm"><span class="font-bold">A. Bianchi</span> submitted <span class="text-primary cursor-pointer hover:underline">WI-PRD-022</span> for review</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">11:45</span>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="relative pl-lg flex flex-col gap-xs">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-surface flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant" data-icon="edit">edit</span>
+</div>
+<div class="flex justify-between items-start">
+<p class="font-body-sm text-body-sm"><span class="font-bold">System</span> created auto-backup of Quality Manual</p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">09:00</span>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="relative pl-lg flex flex-col gap-xs">
+<div class="absolute left-0 top-1 w-[24px] h-[24px] bg-surface flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[18px] text-error" data-icon="cancel">cancel</span>
+</div>
+<div class="flex justify-between items-start">
+<p class="font-body-sm text-body-sm"><span class="font-bold">G. Verdi</span> rejected <span class="text-primary cursor-pointer hover:underline">SOP-LOG-001</span></p>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Yesterday</span>
+</div>
+<p class="text-[12px] text-on-surface-variant italic">"Missing digital signature for Section 4.2. Reference incorrect clause."</p>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant text-center">
+<button class="text-primary font-label-md text-label-md hover:underline">View Audit Log</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Dashboard Utility Section -->
+<section class="mt-lg grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="bg-surface-container-low border border-outline-variant p-lg rounded-xl flex items-center gap-lg">
+<div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[32px] text-on-primary-container" data-icon="school">school</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm font-bold text-on-surface">ISO Training Portal</h4>
+<p class="text-body-sm text-on-surface-variant mt-1">4 Team members have mandatory training modules expiring in the next 30 days. Schedule update sessions.</p>
+<button class="mt-md px-md py-2 border border-primary text-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors">Manage Training</button>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-lg rounded-xl flex items-center gap-lg">
+<div class="w-16 h-16 bg-tertiary-container rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[32px] text-on-tertiary-container" data-icon="history_edu">history_edu</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm font-bold text-on-surface">External Audit Prep</h4>
+<p class="text-body-sm text-on-surface-variant mt-1">Prepare the quality binder for the upcoming BSI certification visit. All documents current and synchronized.</p>
+<button class="mt-md px-md py-2 border border-tertiary text-tertiary font-label-md text-label-md rounded-lg hover:bg-tertiary-container hover:text-on-tertiary-container transition-colors">Open Auditor View</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-[260px] w-[calc(100%-260px)] py-sm bg-surface-container-low border-t border-outline-variant flex justify-between items-center px-lg">
+<span class="font-code-sm text-code-sm text-secondary">Peroni Quality Hub v2.4.0 | ISO 9001:2015 Compliant</span>
+<div class="flex gap-lg">
+<a class="font-code-sm text-code-sm text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+<a class="font-code-sm text-code-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-code-sm text-code-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction: Sidebar toggle simulation (visual only)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'b') {
+                const aside = document.querySelector('aside');
+                const main = document.querySelector('main');
+                const header = document.querySelector('header');
+                const footer = document.querySelector('footer');
+                
+                if (aside.classList.contains('w-[260px]')) {
+                    aside.classList.remove('w-[260px]');
+                    aside.classList.add('w-[64px]');
+                    main.classList.replace('ml-[260px]', 'ml-[64px]');
+                    header.classList.replace('w-[calc(100%-260px)]', 'w-[calc(100%-64px)]');
+                    footer.classList.replace('ml-[260px]', 'ml-[64px]');
+                    footer.classList.replace('w-[calc(100%-260px)]', 'w-[calc(100%-64px)]');
+                } else {
+                    aside.classList.remove('w-[64px]');
+                    aside.classList.add('w-[260px]');
+                    main.classList.replace('ml-[64px]', 'ml-[260px]');
+                    header.classList.replace('w-[calc(100%-64px)]', 'w-[calc(100%-260px)]');
+                    footer.classList.replace('ml-[64px]', 'ml-[260px]');
+                    footer.classList.replace('w-[calc(100%-64px)]', 'w-[calc(100%-260px)]');
+                }
+            }
+        });
+    </script>
+</body></html>

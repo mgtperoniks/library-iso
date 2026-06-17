@@ -172,6 +172,13 @@
 
     {{-- LEFT: main content --}}
     <div style="flex:1;min-width:320px">
+      
+      @if($document->current_version_id && $currentVersion && $currentVersion->id != $document->current_version_id && $currentVersion->status === 'approved')
+        <div style="background-color: #fee4e2; border: 2px solid #b42318; color: #b42318; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            ⚠️ OBSOLETE VERSION — FOR REFERENCE ONLY ⚠️
+        </div>
+      @endif
+
       <h1 style="margin:0 0 8px 0;">
         {{ $document->doc_code ? $document->doc_code.' — ' : '' }}{{ $document->title ?? '-' }}
       </h1>
@@ -627,6 +634,14 @@
         }
       } catch (e) {}
     }, false);
+
+    // auto-open edit modal if edit=1 query parameter is present
+    try {
+      if (new URLSearchParams(window.location.search).get('edit') === '1') {
+        var modalEl = document.getElementById('editModal');
+        if (modalEl) modalEl.style.display = 'block';
+      }
+    } catch(e) {}
 
     // expose helper
     window.__docShow = { attachVersionOpenHandlers: attachVersionOpenHandlers };
