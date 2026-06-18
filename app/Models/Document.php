@@ -29,6 +29,8 @@ class Document extends Model
         'approved_by',
         'approved_at',
         'related_links',       // <== tambahan: JSON array link terkait
+        'next_review_date',
+        'review_frequency',
     ];
 
     /**
@@ -41,6 +43,7 @@ class Document extends Model
         'updated_at'          => 'datetime',
         'revision_date'       => 'datetime',
         'approved_at'         => 'datetime',
+        'next_review_date'    => 'datetime',
         'doc_number'          => 'integer',
         'revision_number'     => 'integer',
         'department_id'       => 'integer',
@@ -48,6 +51,7 @@ class Document extends Model
         'approved_by'         => 'integer',
         'current_version_id'  => 'integer',
         'related_links'       => 'array',   // <== otomatis cast ke array
+        'review_frequency'    => 'integer',
     ];
 
     /* -------------------------
@@ -79,6 +83,11 @@ class Document extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(DocumentVersion::class);
+    }
+
+    public function reviewEvents(): HasMany
+    {
+        return $this->hasMany(ReviewEvent::class);
     }
 
     /**

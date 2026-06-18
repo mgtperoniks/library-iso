@@ -334,6 +334,8 @@ class DocumentController extends Controller
             'category_id'   => $validated['category_id'] ?? $document->category_id,
         ]);
 
+        $this->maybeAudit('document_metadata_updated', $user->id ?? null, $document->id, null, $request->ip(), ['summary' => 'Metadata updated']);
+
         if ($request->filled('related_links')) {
             $document->related_links = $this->parseRelatedLinksInput($request->input('related_links'));
             $document->save();
@@ -730,6 +732,13 @@ class DocumentController extends Controller
     {
         $disk = $this->getDisk();
 
+        // Check if obsolete (approved but not current version)
+        $document = $version->document;
+        $isObsolete = false;
+        if ($document && $document->current_version_id && $version->id != $document->current_version_id && $version->status === 'approved') {
+            $isObsolete = true;
+        }
+
         // prefer pdf_path, then file_path, then master_path as fallback
         $candidates = [$version->pdf_path ?? null, $version->file_path ?? null, $version->master_path ?? null];
 
@@ -738,8 +747,13 @@ class DocumentController extends Controller
             $path = ltrim($p, '/');
             if (! $disk->exists($path)) continue;
 
+            $fileName = basename($path);
+            if ($isObsolete) {
+                $fileName = 'OBSOLETE_' . $fileName;
+            }
+
             try {
-                return $disk->download($path, basename($path));
+                return $disk->download($path, $fileName);
             } catch (\Throwable $e) {
                 $stream = $disk->readStream($path);
                 if ($stream === false) continue;
@@ -751,7 +765,7 @@ class DocumentController extends Controller
                 }, 200, array_filter([
                     'Content-Type' => $mime ?: 'application/octet-stream',
                     'Content-Length' => $size,
-                    'Content-Disposition' => 'attachment; filename="'.basename($path).'"',
+                    'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
                 ]));
             }
         }
@@ -763,6 +777,13 @@ class DocumentController extends Controller
     {
         $user = request()->user();
         if (! $user) abort(403, 'Login required.');
+
+        // Check if obsolete (approved but not current version)
+        $document = $version->document;
+        $isObsolete = false;
+        if ($document && $document->current_version_id && $version->id != $document->current_version_id && $version->status === 'approved') {
+            $isObsolete = true;
+        }
 
         $disks = $this->getAvailableDisks();
 
@@ -785,8 +806,13 @@ class DocumentController extends Controller
                     $this->maybeAudit('download_master', $user->id ?? null, $version->document_id ?? null, $version->id, request()->ip(), ['path' => $path]);
                 }
 
+                $fileName = basename($path);
+                if ($isObsolete) {
+                    $fileName = 'OBSOLETE_' . $fileName;
+                }
+
                 try {
-                    return $disk->download($path, basename($path));
+                    return $disk->download($path, $fileName);
                 } catch (\Throwable $e) {
                     $stream = (method_exists($this, 'safeDiskCall')) ? $this->safeDiskCall(fn() => $disk->readStream($path)) : (function() use ($disk,$path){ try{ return $disk->readStream($path);}catch(\Throwable){return false;} })();
                     if ($stream === false || $stream === null) continue;
@@ -798,7 +824,7 @@ class DocumentController extends Controller
                     }, 200, array_filter([
                         'Content-Type' => $mime ?: 'application/octet-stream',
                         'Content-Length' => $size,
-                        'Content-Disposition' => 'attachment; filename="'.basename($path).'"',
+                        'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
                         'Cache-Control' => 'private, max-age=0, must-revalidate',
                     ]));
                 }

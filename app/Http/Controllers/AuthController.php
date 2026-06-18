@@ -43,31 +43,13 @@ class AuthController extends Controller
     // show register form (optional)
     public function showRegisterForm()
     {
-        // you can disable register in production by redirecting
-        // return redirect()->route('login');
-        return view('auth.register');
+        abort(404);
     }
 
     // register user (optional)
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|confirmed|min:6',
-        ]);
-
-        $user = User::create([
-            'name' => $request->input('name'),
-            'email'=> $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-        ]);
-
-        // optionally assign role here if spatie installed:
-        // $user->assignRole('viewer');
-
-        Auth::login($user);
-        return redirect('/dashboard');
+        abort(404);
     }
 
     // logout

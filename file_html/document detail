@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Detail - Peroni Quality Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e2ed",
+                    "surface-container-highest": "#e1e2ed",
+                    "background": "#faf8ff",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "on-surface-variant": "#434655",
+                    "secondary-fixed": "#d5e3fc",
+                    "tertiary-fixed": "#ffdbcd",
+                    "tertiary-container": "#bc4800",
+                    "secondary": "#515f74",
+                    "surface-container-high": "#e7e7f3",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#943700",
+                    "surface-container": "#ededf9",
+                    "inverse-primary": "#b4c5ff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#0053db",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "surface": "#faf8ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-primary-fixed": "#00174b",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "inverse-surface": "#2e3039",
+                    "outline-variant": "#c3c6d7",
+                    "secondary-container": "#d5e3fc",
+                    "outline": "#737686",
+                    "on-primary-container": "#eeefff",
+                    "on-secondary-fixed-variant": "#3a485b",
+                    "surface-dim": "#d9d9e5",
+                    "primary": "#004ac6",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#faf8ff",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#191b23",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#191b23",
+                    "on-secondary-container": "#57657a",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-container-low": "#f3f3fe",
+                    "primary-container": "#2563eb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "260px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "sm": "8px",
+                    "container-max": "1440px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "body-base": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "code-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                    "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6d7; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #737686; }
+        .active-tab-border { border-left: 2px solid #004ac6; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (from JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] z-50 border-r border-outline-variant bg-surface flex flex-col py-md transition-all duration-300 ease-in-out">
+<div class="px-lg mb-xl">
+<h1 class="font-display-lg text-display-lg font-bold text-primary">Peroni</h1>
+<p class="text-on-surface-variant font-label-md text-[11px] tracking-widest uppercase">ISO 9001:2015</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-lg py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="dashboard">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center px-lg py-sm text-primary border-l-2 border-primary bg-secondary-container transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md text-primary" data-icon="description">description</span> Document Control
+            </a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="verified_user">verified_user</span> Quality Management
+            </a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="gavel">gavel</span> Compliance
+            </a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span> Administration
+            </a>
+</nav>
+<div class="mt-auto px-lg pt-md border-t border-outline-variant">
+<a class="flex items-center py-sm text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="help">help</span> Support
+            </a>
+<a class="flex items-center py-sm text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span> Settings
+            </a>
+</div>
+</aside>
+<!-- TopNavBar (from JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] z-40 h-16 bg-surface-bright border-b border-outline-variant flex justify-between items-center px-lg">
+<div class="flex items-center bg-surface-container-low px-md py-1.5 rounded border border-outline-variant w-96">
+<span class="material-symbols-outlined text-outline mr-sm text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body-sm" placeholder="Search documents, revisions..." type="text"/>
+</div>
+<div class="flex items-center space-x-md">
+<button class="bg-primary text-on-primary px-md py-sm rounded font-label-md text-label-md hover:bg-primary-container transition-all">
+                Quick Action
+            </button>
+<div class="flex items-center space-x-sm">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior quality engineer in a clean corporate environment. The person is smiling confidently, wearing business casual attire. The background is a soft-focus modern office space with clean lines and high-key lighting, maintaining a professional and institutional trust aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL2S-MPnXDH_ZxuNrbvgv3Z4EK96mbbFCp6DjTc7TGcUDI1DAjoHNooaObZ_7hGoV4TISlrwH7gVwQ5HbOwdF_dcSlBSqF3iWo3uMMT97andWLMojiv_9tYKRBjbKN8RSIR5M-Cbhm9wLZD0PA1h1n_GQ_p3ARsMGOTNUVcFbf6qEzgw0VfA3ilbjmLt2IuTddFDUQcYXjwLD5-eTODGPfJBxGU3Go4G4nQQvJqBq_aFLnkTQArekZo6l_hFXUoiyJkbbucD0MQPTH"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] mt-16 p-lg min-h-screen flex flex-col gap-lg">
+<!-- Document Header Metadata Section -->
+<section class="bg-white border border-outline-variant p-lg rounded-lg shadow-sm">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md mb-lg">
+<div class="space-y-1">
+<div class="flex items-center gap-sm">
+<span class="font-code-sm text-code-sm bg-surface-container-high px-sm py-0.5 text-secondary rounded">DOC-QM-2024-082</span>
+<span class="bg-green-100 text-green-800 text-[11px] font-bold px-sm py-0.5 rounded uppercase tracking-wider">Active</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Standard Operating Procedure: Raw Material Quarantine &amp; Inspection</h2>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-sm border border-outline-variant px-md py-sm text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors rounded">
+<span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span> PDF
+                    </button>
+<button class="flex items-center gap-sm border border-outline-variant px-md py-sm text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors rounded">
+<span class="material-symbols-outlined text-sm" data-icon="description">description</span> DOCX
+                    </button>
+<button class="flex items-center gap-sm bg-primary text-on-primary px-md py-sm font-label-md text-label-md hover:bg-primary-container transition-colors rounded shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="history_edu">history_edu</span> Request Revision
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-lg border-t border-outline-variant pt-lg">
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">Department</p>
+<p class="font-body-base text-body-base text-on-surface">Quality Assurance</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">Category</p>
+<p class="font-body-base text-body-base text-on-surface">SOP - Production</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">Revision</p>
+<p class="font-body-base text-body-base text-on-surface">Rev. 04</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">Effective Date</p>
+<p class="font-body-base text-body-base text-on-surface">Oct 12, 2023</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">Owner</p>
+<p class="font-body-base text-body-base text-on-surface">A. Peroni</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wide">ISO Clause</p>
+<p class="font-body-base text-body-base text-on-surface">8.4.2</p>
+</div>
+</div>
+</section>
+<!-- Main Layout Split -->
+<div class="flex flex-1 gap-lg items-start">
+<!-- Document Viewer (Main Area) -->
+<div class="flex-1 bg-white border border-outline-variant rounded-lg overflow-hidden flex flex-col h-[800px] shadow-sm">
+<div class="bg-surface-container-high px-md py-sm flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm" data-icon="zoom_in">zoom_in</span></button>
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm" data-icon="zoom_out">zoom_out</span></button>
+<span class="text-xs font-label-md text-on-surface-variant">Page 1 of 12</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm" data-icon="print">print</span></button>
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-sm" data-icon="fullscreen">fullscreen</span></button>
+</div>
+</div>
+<div class="flex-1 bg-gray-200 overflow-y-auto p-xl flex justify-center custom-scrollbar">
+<!-- Mock PDF Page -->
+<div class="bg-white w-[600px] min-h-[842px] shadow-lg p-xl space-y-md">
+<div class="flex justify-between border-b-2 border-primary pb-sm mb-lg">
+<div class="text-primary font-bold text-xl">Peroni HUB</div>
+<div class="text-right text-[10px] text-on-surface-variant">
+<div>Doc ID: SOP-QA-082</div>
+<div>Confidential - Internal Use Only</div>
+</div>
+</div>
+<h1 class="text-2xl font-bold text-center py-md">1. PURPOSE &amp; SCOPE</h1>
+<p class="text-sm leading-relaxed text-gray-700">This document establishes the uniform procedure for the quarantine, inspection, and disposition of all raw materials received at the Peroni manufacturing facility. This procedure ensures compliance with ISO 9001:2015 Clause 8.4 regarding Control of Externally Provided Processes, Products, and Services.</p>
+<h2 class="text-lg font-bold border-b border-gray-200 pt-md">2. DEFINITIONS</h2>
+<ul class="list-disc ml-md text-sm space-y-sm text-gray-700">
+<li><strong>Quarantine:</strong> The status of materials isolated physically or by other effective means pending a decision on their subsequent approval or rejection.</li>
+<li><strong>Inspection:</strong> The process of measuring, examining, testing, or otherwise comparing the unit of product with the requirements.</li>
+</ul>
+<div class="h-40 bg-gray-50 border border-dashed border-gray-300 rounded flex items-center justify-center italic text-gray-400 text-xs">
+                            Technical Diagram: Flowchart of material movement through Facility Zone A-4
+                        </div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar Panel -->
+<aside class="w-[340px] flex flex-col gap-md">
+<!-- Review Schedule Card -->
+<div class="bg-white border border-outline-variant rounded-lg shadow-sm p-md">
+<h3 class="font-label-md text-label-md text-secondary border-b border-outline-variant pb-sm mb-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span> Review Schedule
+                    </h3>
+<div class="space-y-sm">
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs">Last Review</span>
+<span class="text-on-surface text-xs font-semibold">Oct 12, 2023</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs">Next Review</span>
+<span class="text-on-surface text-xs font-semibold text-error">Oct 12, 2024</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs">Frequency</span>
+<span class="text-on-surface text-xs font-semibold">Annual</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Sections -->
+<div class="bg-white border border-outline-variant rounded-lg shadow-sm divide-y divide-outline-variant">
+<!-- Section: Revision History -->
+<details class="group" open="">
+<summary class="flex justify-between items-center p-md cursor-pointer hover:bg-surface-container-low transition-colors list-none">
+<span class="font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="history">history</span> Revision History
+                            </span>
+<span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="p-md space-y-md">
+<div class="relative pl-md border-l-2 border-outline-variant">
+<div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-primary"></div>
+<p class="text-xs font-bold">Rev. 04 <span class="text-on-surface-variant font-normal ml-sm">Current</span></p>
+<p class="text-[11px] text-on-surface-variant">Oct 12, 2023 by A. Peroni</p>
+<p class="text-[11px] italic mt-1">Updated quarantine tags logic for Zone B.</p>
+</div>
+<div class="relative pl-md border-l-2 border-outline-variant">
+<div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-outline-variant"></div>
+<p class="text-xs font-bold text-on-surface-variant">Rev. 03</p>
+<p class="text-[11px] text-on-surface-variant">Feb 04, 2022 by M. Rossi</p>
+</div>
+<button class="w-full text-center text-xs text-primary font-bold hover:underline">View All 4 Versions</button>
+</div>
+</details>
+<!-- Section: Approval History -->
+<details class="group">
+<summary class="flex justify-between items-center p-md cursor-pointer hover:bg-surface-container-low transition-colors list-none">
+<span class="font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span> Approvals
+                            </span>
+<span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="p-md space-y-sm">
+<div class="flex items-center gap-sm text-xs">
+<span class="material-symbols-outlined text-green-600 text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-semibold">Quality Director</span>
+<span class="text-on-surface-variant">Oct 10, 2023</span>
+</div>
+<div class="flex items-center gap-sm text-xs">
+<span class="material-symbols-outlined text-green-600 text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-semibold">Plant Manager</span>
+<span class="text-on-surface-variant">Oct 09, 2023</span>
+</div>
+</div>
+</details>
+<!-- Section: Related Documents -->
+<details class="group">
+<summary class="flex justify-between items-center p-md cursor-pointer hover:bg-surface-container-low transition-colors list-none">
+<span class="font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span> Related Documents
+                            </span>
+<span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="p-md space-y-sm">
+<a class="flex items-center gap-sm text-xs text-primary hover:underline" href="#">
+<span class="material-symbols-outlined text-xs" data-icon="description">description</span> FORM-QA-10: Inspection Log
+                            </a>
+<a class="flex items-center gap-sm text-xs text-primary hover:underline" href="#">
+<span class="material-symbols-outlined text-xs" data-icon="description">description</span> SOP-WH-04: Material Storage
+                            </a>
+</div>
+</details>
+<!-- Section: Audit Trail -->
+<details class="group">
+<summary class="flex justify-between items-center p-md cursor-pointer hover:bg-surface-container-low transition-colors list-none">
+<span class="font-label-md text-label-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm" data-icon="list_alt">list_alt</span> Audit Trail
+                            </span>
+<span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="p-md space-y-sm">
+<div class="text-[11px]">
+<span class="font-bold">System</span> printed copy #402
+                                <div class="text-on-surface-variant">2 hours ago</div>
+</div>
+<div class="text-[11px]">
+<span class="font-bold">J. Smith</span> viewed document
+                                <div class="text-on-surface-variant">Yesterday, 14:20</div>
+</div>
+</div>
+</details>
+</div>
+<!-- Technical Specs / Metadata Detailed -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md">
+<p class="font-label-md text-[11px] text-secondary uppercase mb-sm">Storage Metadata</p>
+<table class="w-full text-xs text-on-surface-variant">
+<tbody><tr>
+<td class="py-1">Format</td>
+<td class="py-1 font-semibold text-on-surface text-right">PDF/A-3b</td>
+</tr>
+<tr>
+<td class="py-1">Size</td>
+<td class="py-1 font-semibold text-on-surface text-right">2.4 MB</td>
+</tr>
+<tr>
+<td class="py-1">Retention</td>
+<td class="py-1 font-semibold text-on-surface text-right">10 Years</td>
+</tr>
+</tbody></table>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer (from JSON) -->
+<footer class="ml-[260px] w-[calc(100%-260px)] py-sm border-t border-outline-variant bg-surface-container-low flex justify-between items-center px-lg">
+<div class="text-secondary font-code-sm text-code-sm">
+            Peroni Quality Hub v2.4.0 | ISO 9001:2015 Compliant
+        </div>
+<div class="flex gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-code-sm" href="#">System Status</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-code-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-code-sm" href="#">Documentation</a>
+</div>
+</footer>
+<script>
+        // Simple Micro-interaction: Toggle details behavior (logic only if manual handling needed, 
+        // but <details> handles itself natively. Adding focus styling.)
+        document.querySelectorAll('details').forEach(det => {
+            det.addEventListener('toggle', () => {
+                if(det.open) {
+                    console.log('Section expanded:', det.querySelector('span').innerText);
+                }
+            });
+        });
+    </script>
+</body></html>

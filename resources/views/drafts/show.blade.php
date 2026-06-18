@@ -1,5 +1,5 @@
 {{-- resources/views/drafts/show.blade.php --}}
-@extends('layouts.app')
+@extends('layouts.iso')
 
 @section('title', 'Draft Detail')
 
@@ -36,7 +36,7 @@
   @endif
 
   <h2 style="margin-bottom:10px;">
-    Draft: {{ $version->document->doc_code ?? '-' }}
+    Draft: <span style="font-family: var(--mono);">{{ $version->document->doc_code ?? '-' }}</span>
     — {{ $version->document->title ?? '-' }}
     ({{ $version->version_label }})
   </h2>
@@ -44,9 +44,13 @@
   <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
     {{-- LEFT: content --}}
     <div style="flex:1;min-width:280px;background:#fff;padding:12px;border-radius:8px;">
-      <p style="margin:0 0 6px 0;">
-        <strong>Status:</strong> {{ $version->status }}
-        — <strong>Stage:</strong> {{ $version->approval_stage ?? 'KABAG' }}
+      <p style="margin:0 0 6px 0; display:flex; align-items:center; gap:8px;">
+        <strong>Status:</strong>
+        <span class="status-badge status-{{ $version->status === 'rejected' ? 'rejected' : ($version->status === 'approved' ? 'approved' : 'draft') }}">
+          {{ $version->status }}
+        </span>
+        — <strong>Stage:</strong>
+        <span class="status-badge status-review">{{ $version->approval_stage ?? 'KABAG' }}</span>
       </p>
       <p style="margin:0 0 12px 0;">
         <strong>Created by:</strong> {{ $version->creator?->name ?? $version->created_by }}
@@ -80,7 +84,7 @@
         @if($canModerate && ! $isFinal)
           <form method="POST" action="{{ route('approval.approve', $version->id) }}" style="margin-bottom:10px;">
             @csrf
-            <button class="btn" type="submit" onclick="return confirm('Yakin approve versi ini?')">Approve</button>
+            <button class="btn btn-success" style="width:100%;" type="submit" onclick="return confirm('Yakin approve versi ini?')">Approve</button>
           </form>
 
           {{-- REJECT: require note --}}
@@ -94,7 +98,7 @@
                         placeholder="Tuliskan alasan penolakan"
                         style="width:100%;border:1px solid #e5e7eb;border-radius:6px;padding:6px;"></textarea>
             </div>
-            <button class="btn-muted" type="submit" onclick="return confirm('Kirim penolakan dan catatan?')">Reject</button>
+            <button class="btn btn-danger" style="width:100%;" type="submit" onclick="return confirm('Kirim penolakan dan catatan?')">Reject</button>
           </form>
         @endif
 
@@ -102,7 +106,7 @@
         @if($canDelete && ! $isFinal)
           <form method="POST" action="{{ route('drafts.destroy', $version->id) }}" style="margin-top:12px;" onsubmit="return confirm('Hapus draft ini? Tindakan ini tidak dapat dibatalkan.')">
             @csrf
-            <button class="btn-small btn-danger" type="submit">Delete draft</button>
+            <button class="btn btn-danger" style="width:100%;" type="submit"><span class="material-symbols-outlined" style="font-size:16px;">delete</span> Delete draft</button>
           </form>
         @endif
 
@@ -110,7 +114,7 @@
         @if($canReopen && ! in_array($version->status, ['approved'], true))
           <form method="POST" action="{{ route('drafts.reopen', $version->id) }}" style="margin-top:12px;">
             @csrf
-            <button class="btn-small" type="submit" onclick="return confirm('Reopen versi ini menjadi draft?')">Reopen as Draft</button>
+            <button class="btn btn-secondary" style="width:100%;" type="submit" onclick="return confirm('Reopen versi ini menjadi draft?')">Reopen as Draft</button>
           </form>
         @endif
 

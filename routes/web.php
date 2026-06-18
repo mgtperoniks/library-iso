@@ -10,8 +10,7 @@ use App\Http\Controllers\DocumentVersionController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RecycleController;
-use App\Http\Controllers\AuditLogController;
-use App\Http\Controllers\RevisionHistoryController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +33,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/login',     [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login',    [AuthController::class, 'login'])->name('login.attempt');
 
-    Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
+    // Route::get('/register',  [AuthController::class, 'showRegisterForm'])->name('register');
+    // Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
 });
 
 /*
@@ -124,7 +123,7 @@ Route::middleware('auth')->group(function () {
         Route::put('{version}',                [DocumentVersionController::class, 'update'])
             ->whereNumber('version')->name('update');
 
-        Route::get('{version}/choose-compare', [DocumentVersionController::class, 'chooseCompare'])
+        Route::get('{version}/choose-compare', [DocumentController::class, 'chooseCompare'])
             ->whereNumber('version')->name('chooseCompare');
 
         // Mark version as trashed (controller handles authorization)
@@ -201,9 +200,16 @@ Route::middleware('auth')->group(function () {
             ->whereNumber('version')->name('destroy.post');
     });
 
-    // Audit & History
-    Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit.index');
-    Route::get('/revision-history', [RevisionHistoryController::class, 'index'])->name('revision.index');
+    /*
+    |--------------------------------------------------------------------------
+    | Review Program
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('due',                       [ReviewController::class, 'due'])->name('due');
+        Route::post('{document}/still-relevant', [ReviewController::class, 'stillRelevant'])->name('stillRelevant');
+        Route::post('{document}/needs-revision', [ReviewController::class, 'needsRevision'])->name('needsRevision');
+    });
 });
 
 /*
@@ -219,4 +225,12 @@ Route::get('/departments', [DepartmentController::class, 'index'])->name('depart
 Route::get('/departments/{department}', [DepartmentController::class, 'show'])
     ->whereNumber('department')->name('departments.show');
 
-// Extra routes removed for consolidation
+/*
+|--------------------------------------------------------------------------
+| Optional extra ISO routes (external file)
+|--------------------------------------------------------------------------
+*/
+$isoRoutes = base_path('routes/iso_documents.php');
+if (file_exists($isoRoutes)) {
+    require $isoRoutes;
+}

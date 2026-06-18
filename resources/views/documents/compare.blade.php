@@ -21,7 +21,7 @@
                 <select id="v1" name="v1" class="mt-1 block w-full border rounded px-3 py-2" aria-label="Base version">
                     <option value="">-- pilih base (lebih lama) --</option>
                     @foreach($versions as $ver)
-                        <option value="{{ $ver->id }}" @if(optional($v1)->id == $ver->id) selected @endif
+                        <option value="{{ $ver->id }}" @if(optional($ver1)->id == $ver->id) selected @endif
                             data-status="{{ strtolower($ver->status ?? '') }}"
                             data-created-at="{{ optional($ver->created_at)->toDateString() }}">
                             {{ $ver->version_label }} — {{ $ver->status ?? 'N/A' }} — {{ optional($ver->created_at)->format('Y-m-d') }}
@@ -35,7 +35,7 @@
                 <select id="v2" name="v2" class="mt-1 block w-full border rounded px-3 py-2" aria-label="Target version">
                     <option value="">-- pilih target (lebih baru) --</option>
                     @foreach($versions as $ver)
-                        <option value="{{ $ver->id }}" @if(optional($v2)->id == $ver->id) selected @endif
+                        <option value="{{ $ver->id }}" @if(optional($ver2)->id == $ver->id) selected @endif
                             data-status="{{ strtolower($ver->status ?? '') }}"
                             data-created-at="{{ optional($ver->created_at)->toDateString() }}">
                             {{ $ver->version_label }} — {{ $ver->status ?? 'N/A' }} — {{ optional($ver->created_at)->format('Y-m-d') }}
@@ -58,13 +58,13 @@
 
     {{-- Hasil perbandingan --}}
     <div id="diffResult">
-        @if(isset($v1) && isset($v2))
+        @if(isset($ver1) && isset($ver2))
             <div class="mb-3 text-sm text-gray-600">
                 Membandingkan:
-                <strong>{{ $v1->version_label }} ({{ optional($v1->created_at)->format('d M Y') }})</strong>
+                <strong>{{ $ver1->version_label }} ({{ optional($ver1->created_at)->format('d M Y') }})</strong>
                 vs
-                <strong>{{ $v2->version_label }} ({{ optional($v2->created_at)->format('d M Y') }})</strong>
-                — Diupload oleh: <em>{{ optional($v2->creator)->name ?? 'Tidak diketahui' }}</em>
+                <strong>{{ $ver2->version_label }} ({{ optional($ver2->created_at)->format('d M Y') }})</strong>
+                — Diupload oleh: <em>{{ optional($ver2->creator)->name ?? 'Tidak diketahui' }}</em>
             </div>
 
             <div class="bg-white border rounded-lg shadow-sm p-4 overflow-auto">

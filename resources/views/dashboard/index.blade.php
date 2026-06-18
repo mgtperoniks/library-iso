@@ -5,10 +5,9 @@
 
 @section('content')
 <div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>Dashboard</h1>
+  <div class="dashboard-header" style="display:flex; justify-content:flex-end; margin-bottom:16px;">
     <div>
-      <a class="btn" href="{{ route('documents.create') }}">+ New Document</a>
+      <a class="btn btn-primary" href="{{ route('documents.create') }}"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Document</a>
     </div>
   </div>
 
@@ -83,12 +82,12 @@
             <tbody>
               @php
                 $statusBadge = [
-                  'draft' => 'badge-warning',
-                  'pending' => 'badge-warning',
-                  'submitted' => 'badge-warning',
-                  'approved' => 'badge-success',
-                  'published' => 'badge-success',
-                  'rejected' => 'badge-danger',
+                  'draft' => 'status-draft',
+                  'pending' => 'status-submitted',
+                  'submitted' => 'status-submitted',
+                  'approved' => 'status-approved',
+                  'published' => 'status-approved',
+                  'rejected' => 'status-rejected',
                 ];
               @endphp
 
@@ -106,8 +105,8 @@
                   <td>{{ optional($rv->creator)->name ?? ($rv->created_by ?? '—') }}</td>
                   <td>
                     @php $s = strtolower($rv->status ?? 'other'); @endphp
-                    <span class="badge {{ $statusBadge[$s] ?? '' }}">
-                      {{ ucfirst($rv->status ?? 'Other') }}
+                    <span class="status-badge {{ $statusBadge[$s] ?? '' }}">
+                      {{ $rv->status === 'submitted' ? 'Pending Review' : ($rv->status === 'approved' ? 'Active' : ucfirst($rv->status ?? 'Other')) }}
                     </span>
                   </td>
                 </tr>
@@ -124,9 +123,9 @@
     <div class="right-col">
       <div class="card-section card-inner mb-3">
         <h4 class="panel-title">Quick actions</h4>
-        <a href="{{ route('documents.create') }}" class="btn" style="display:block;margin-bottom:10px;background:#0b66ff;color:#fff;">Upload New Document</a>
-        <a href="{{ route('documents.index') }}" class="btn btn-muted" style="display:block;margin-bottom:8px;">Browse Documents</a>
-        <a href="{{ route('approval.index') }}" class="btn btn-muted" style="display:block;margin-bottom:2px;">Approval Queue</a>
+        <a href="{{ route('documents.create') }}" class="btn btn-primary" style="display:flex;margin-bottom:10px;"><span class="material-symbols-outlined" style="font-size:18px;">upload_file</span> Upload New Document</a>
+        <a href="{{ route('documents.index') }}" class="btn btn-secondary" style="display:flex;margin-bottom:8px;"><span class="material-symbols-outlined" style="font-size:18px;">search</span> Browse Documents</a>
+        <a href="{{ route('approval.index') }}" class="btn btn-secondary" style="display:flex;margin-bottom:2px;"><span class="material-symbols-outlined" style="font-size:18px;">playlist_add_check</span> Approval Queue</a>
       </div>
 
       <div class="card-section card-inner">

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Peroni Quality Hub - Document Repository</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            vertical-align: middle;
+            font-size: 18px;
+        }
+        .document-tree-node:hover {
+            background-color: rgba(0, 74, 198, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        .active-tree-item {
+            border-left: 2px solid #004ac6;
+            background-color: #d5e3fc;
+            color: #004ac6;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e1e2ed",
+                        "surface-container-highest": "#e1e2ed",
+                        "background": "#faf8ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-surface-variant": "#434655",
+                        "secondary-fixed": "#d5e3fc",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary-container": "#bc4800",
+                        "secondary": "#515f74",
+                        "surface-container-high": "#e7e7f3",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#943700",
+                        "surface-container": "#ededf9",
+                        "inverse-primary": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0053db",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-fixed": "#00174b",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "inverse-surface": "#2e3039",
+                        "outline-variant": "#c3c6d7",
+                        "secondary-container": "#d5e3fc",
+                        "outline": "#737686",
+                        "on-primary-container": "#eeefff",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "surface-dim": "#d9d9e5",
+                        "primary": "#004ac6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#faf8ff",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b23",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191b23",
+                        "on-secondary-container": "#57657a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-container": "#2563eb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "container-max": "1440px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "code-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-base overflow-hidden flex h-screen">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] z-50 border-r border-outline-variant bg-surface flex flex-col py-md transition-all duration-300 ease-in-out">
+<div class="px-md mb-lg">
+<h1 class="font-display-lg text-display-lg font-bold text-primary">Peroni</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">ISO 9001:2015</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-primary border-l-2 border-primary bg-secondary-container transition-colors" href="#">
+<span class="material-symbols-outlined mr-md text-primary" data-icon="description">description</span>
+                Document Control
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="verified_user">verified_user</span>
+                Quality Management
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="gavel">gavel</span>
+                Compliance
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+                Administration
+            </a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant space-y-1">
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="help">help</span>
+                Support
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar (Execution from JSON) -->
+<header class="h-16 flex justify-between items-center px-lg border-b border-outline-variant bg-surface-bright z-40">
+<div class="flex items-center gap-md flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-lg pr-md py-xs font-body-sm text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search Document Repository..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-md py-xs rounded font-label-md text-label-md flex items-center gap-xs hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Quick Action
+                </button>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="flex items-center gap-xs pl-sm border-l border-outline-variant">
+<span class="material-symbols-outlined text-outline" data-icon="account_circle">account_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Quality Admin</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Secondary Toolbar: Filters -->
+<section class="bg-surface-container-lowest border-b border-outline-variant px-lg py-sm flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="flex flex-col">
+<label class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Department</label>
+<select class="bg-transparent border-none p-0 font-label-md text-label-md text-primary focus:ring-0 cursor-pointer">
+<option>All Departments</option>
+<option>Production</option>
+<option>Quality Assurance</option>
+<option>Maintenance</option>
+<option>Logistics</option>
+</select>
+</div>
+<div class="w-[1px] h-8 bg-outline-variant"></div>
+<div class="flex flex-col">
+<label class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Category</label>
+<select class="bg-transparent border-none p-0 font-label-md text-label-md text-primary focus:ring-0 cursor-pointer">
+<option>All Categories</option>
+<option>Manual Mutu</option>
+<option>Procedure</option>
+<option>Work Instruction</option>
+<option>Forms</option>
+</select>
+</div>
+<div class="w-[1px] h-8 bg-outline-variant"></div>
+<div class="flex flex-col">
+<label class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Status</label>
+<select class="bg-transparent border-none p-0 font-label-md text-label-md text-primary focus:ring-0 cursor-pointer">
+<option>All Statuses</option>
+<option>Approved</option>
+<option>Review Due</option>
+<option>Overdue</option>
+<option>Superseded</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="view_list">view_list</span>
+</button>
+<button class="p-xs text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<button class="p-xs text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</section>
+<!-- Main Content Split -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Document Tree Panel (Left) -->
+<aside class="w-64 border-r border-outline-variant bg-surface flex flex-col overflow-y-auto custom-scrollbar">
+<div class="p-md">
+<h3 class="text-[11px] font-bold text-outline uppercase tracking-widest mb-sm">Hierarchy</h3>
+<div class="space-y-0.5">
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+<span class="material-symbols-outlined text-amber-500" data-icon="folder" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="font-body-sm text-body-sm">Document Library</span>
+</div>
+<div class="ml-4 space-y-0.5">
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+<span class="material-symbols-outlined text-amber-400" data-icon="folder" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="font-body-sm text-body-sm">Manual Mutu</span>
+</div>
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer active-tree-item">
+<span class="material-symbols-outlined text-primary" data-icon="expand_more">expand_more</span>
+<span class="material-symbols-outlined text-amber-400" data-icon="folder_open" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-body-sm text-body-sm font-semibold">Procedure</span>
+</div>
+<div class="ml-4 space-y-0.5">
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="article">article</span>
+<span class="font-body-sm text-body-sm">Standard Operating...</span>
+</div>
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="article">article</span>
+<span class="font-body-sm text-body-sm">Management Review</span>
+</div>
+</div>
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+<span class="material-symbols-outlined text-amber-400" data-icon="folder" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="font-body-sm text-body-sm">Work Instruction</span>
+</div>
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+<span class="material-symbols-outlined text-amber-400" data-icon="folder" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="font-body-sm text-body-sm">Forms</span>
+</div>
+</div>
+</div>
+<div class="mt-lg">
+<h3 class="text-[11px] font-bold text-outline uppercase tracking-widest mb-sm">Recent Pins</h3>
+<div class="space-y-1">
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="push_pin" data-weight="fill" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+<span class="font-body-sm text-body-sm truncate">Audit Checklist 2024</span>
+</div>
+<div class="flex items-center gap-xs p-xs rounded cursor-pointer document-tree-node">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="push_pin" data-weight="fill" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+<span class="font-body-sm text-body-sm truncate">ISO 9001 Policy</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Document Table Area (Main) -->
+<section class="flex-1 flex flex-col bg-white overflow-hidden">
+<div class="flex-1 overflow-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[1000px]">
+<thead class="sticky top-0 bg-gray-50 z-10 border-b border-outline-variant shadow-sm">
+<tr>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px] w-8">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/>
+</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Code</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Title</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Department</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Category</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px] text-center">Rev</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Status</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px]">Last Updated</th>
+<th class="px-md py-sm font-label-md text-label-md text-outline uppercase text-[11px] text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Approved Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">SOP-QA-001</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-red-600" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="font-body-sm text-body-sm font-medium">Standard Operating Procedure: Internal Audit</span>
+</div>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm">Quality Assurance</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Procedure</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">04</td>
+<td class="px-md py-sm">
+<span class="inline-flex items-center gap-xs bg-green-100 text-green-700 px-sm py-0.5 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> Approved
+                                    </span>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">24 Oct 2023</td>
+<td class="px-md py-sm text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Review Due Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">WI-PR-042</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-blue-600" data-icon="description">description</span>
+<span class="font-body-sm text-body-sm font-medium">Machine Calibration Instruction - Line A</span>
+</div>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm">Production</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Work Instruction</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">02</td>
+<td class="px-md py-sm">
+<span class="inline-flex items-center gap-xs bg-orange-100 text-orange-700 px-sm py-0.5 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> Review Due
+                                    </span>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">15 Nov 2023</td>
+<td class="px-md py-sm text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Overdue Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">FOR-MT-012</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-green-600" data-icon="table_chart">table_chart</span>
+<span class="font-body-sm text-body-sm font-medium">Maintenance Log Sheet: Monthly</span>
+</div>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm">Maintenance</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Forms</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">01</td>
+<td class="px-md py-sm">
+<span class="inline-flex items-center gap-xs bg-red-100 text-red-700 px-sm py-0.5 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-red-600"></span> Overdue
+                                    </span>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">12 Aug 2023</td>
+<td class="px-md py-sm text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Superseded Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">QM-SYS-001</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-red-600" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="font-body-sm text-body-sm font-medium">Quality Manual (2018 Ed.)</span>
+</div>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm">Management</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Manual Mutu</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">08</td>
+<td class="px-md py-sm">
+<span class="inline-flex items-center gap-xs bg-gray-100 text-gray-700 px-sm py-0.5 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span> Superseded
+                                    </span>
+</td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">01 Jan 2023</td>
+<td class="px-md py-sm text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- More placeholder data to show density -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">SOP-HR-015</td>
+<td class="px-md py-sm"><div class="flex items-center gap-xs"><span class="material-symbols-outlined text-blue-600" data-icon="description">description</span><span class="font-body-sm text-body-sm font-medium">Recruitment &amp; Training Procedure</span></div></td>
+<td class="px-md py-sm font-body-sm text-body-sm">Human Resources</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Procedure</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">03</td>
+<td class="px-md py-sm"><span class="inline-flex items-center gap-xs bg-green-100 text-green-700 px-sm py-0.5 rounded-full text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> Approved</span></td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">10 Dec 2023</td>
+<td class="px-md py-sm text-right"><button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all"><span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span></button></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">WI-LO-005</td>
+<td class="px-md py-sm"><div class="flex items-center gap-xs"><span class="material-symbols-outlined text-green-600" data-icon="table_chart">table_chart</span><span class="font-body-sm text-body-sm font-medium">Loading Dock Safety Check</span></div></td>
+<td class="px-md py-sm font-body-sm text-body-sm">Logistics</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Work Instruction</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">01</td>
+<td class="px-md py-sm"><span class="inline-flex items-center gap-xs bg-orange-100 text-orange-700 px-sm py-0.5 rounded-full text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> Review Due</span></td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">02 Feb 2024</td>
+<td class="px-md py-sm text-right"><button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all"><span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span></button></td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm"><input class="rounded border-outline-variant text-primary focus:ring-primary w-4 h-4" type="checkbox"/></td>
+<td class="px-md py-sm font-code-sm text-code-sm font-semibold text-primary">FOR-QA-088</td>
+<td class="px-md py-sm"><div class="flex items-center gap-xs"><span class="material-symbols-outlined text-green-600" data-icon="table_chart">table_chart</span><span class="font-body-sm text-body-sm font-medium">Non-Conformance Report Form</span></div></td>
+<td class="px-md py-sm font-body-sm text-body-sm">Quality Assurance</td>
+<td class="px-md py-sm"><span class="bg-surface-variant px-sm py-0.5 rounded text-[11px] font-bold text-on-surface-variant">Forms</span></td>
+<td class="px-md py-sm text-center font-code-sm text-code-sm">12</td>
+<td class="px-md py-sm"><span class="inline-flex items-center gap-xs bg-green-100 text-green-700 px-sm py-0.5 rounded-full text-[11px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-green-600"></span> Approved</span></td>
+<td class="px-md py-sm font-body-sm text-body-sm text-on-surface-variant">15 Jan 2024</td>
+<td class="px-md py-sm text-right"><button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-surface-container-high rounded transition-all"><span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span></button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Pagination & Meta -->
+<footer class="bg-surface-container-low border-t border-outline-variant px-lg py-sm flex justify-between items-center text-secondary">
+<div class="flex items-center gap-md">
+<span class="font-code-sm text-code-sm">Peroni Quality Hub v2.4.0 | ISO 9001:2015 Compliant</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex gap-sm">
+<button class="p-xs hover:text-primary transition-colors text-outline">System Status</button>
+<button class="p-xs hover:text-primary transition-colors text-outline">Privacy Policy</button>
+<button class="p-xs hover:text-primary transition-colors text-outline">Documentation</button>
+</div>
+<div class="flex items-center gap-sm font-label-md text-label-md">
+<span>Showing 1-7 of 154 documents</span>
+<div class="flex gap-xs">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded bg-primary text-on-primary">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</footer>
+</section>
+<!-- Metadata/Preview Sidebar (Contextual) -->
+<aside class="w-72 bg-gray-50 border-l border-outline-variant hidden xl:flex flex-col p-md overflow-y-auto custom-scrollbar">
+<div class="mb-lg">
+<div class="w-full aspect-[3/4] bg-white border border-outline-variant rounded shadow-sm flex items-center justify-center overflow-hidden mb-sm relative">
+<!-- Mock Preview Image -->
+<div class="absolute inset-0 flex flex-col p-4 opacity-10">
+<div class="w-1/2 h-4 bg-black mb-2"></div>
+<div class="w-full h-2 bg-gray-400 mb-1"></div>
+<div class="w-full h-2 bg-gray-400 mb-1"></div>
+<div class="w-2/3 h-2 bg-gray-400 mb-6"></div>
+<div class="grid grid-cols-2 gap-2">
+<div class="h-10 border border-black"></div>
+<div class="h-10 border border-black"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[48px]" data-icon="visibility">visibility</span>
+</div>
+<button class="w-full bg-white border border-outline-variant text-on-surface-variant font-label-md text-label-md py-sm rounded hover:bg-surface-container-high transition-colors mb-xs">Open in New Tab</button>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded hover:opacity-90 transition-opacity">Download PDF</button>
+</div>
+<div>
+<h3 class="text-[11px] font-bold text-outline uppercase tracking-widest mb-md">Document Properties</h3>
+<div class="space-y-md">
+<div>
+<p class="text-[10px] font-bold text-outline uppercase">Owner</p>
+<div class="flex items-center gap-xs mt-1">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-primary">MS</div>
+<p class="text-body-sm font-medium">Marco Rossi</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<p class="text-[10px] font-bold text-outline uppercase">ISO Clause</p>
+<p class="text-body-sm font-medium">9.2.1</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-outline uppercase">Next Review</p>
+<p class="text-body-sm font-medium">15 Oct 2024</p>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold text-outline uppercase">Change Log</p>
+<div class="mt-sm relative pl-4 border-l-2 border-outline-variant space-y-md">
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-white"></div>
+<p class="text-[11px] font-bold">Ver 04 - Published</p>
+<p class="text-[10px] text-outline">24 Oct 2023 by Admin</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-outline-variant border-2 border-white"></div>
+<p class="text-[11px] font-bold text-on-surface-variant">Ver 03 - Archived</p>
+<p class="text-[10px] text-outline">12 Jan 2022 by Admin</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for sidebar collapse (visual only)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'b') {
+                const aside = document.querySelector('aside.fixed');
+                const main = document.querySelector('main');
+                if (aside.style.width === '64px') {
+                    aside.style.width = '260px';
+                    main.style.marginLeft = '260px';
+                    aside.querySelectorAll('span:not(.material-symbols-outlined)').forEach(s => s.style.display = 'inline');
+                    aside.querySelector('h1').style.display = 'block';
+                    aside.querySelector('p').style.display = 'block';
+                } else {
+                    aside.style.width = '64px';
+                    main.style.marginLeft = '64px';
+                    aside.querySelectorAll('span:not(.material-symbols-outlined)').forEach(s => s.style.display = 'none');
+                    aside.querySelector('h1').style.display = 'none';
+                    aside.querySelector('p').style.display = 'none';
+                }
+            }
+        });
+
+        // Search bar interaction
+        const searchInput = document.querySelector('input[placeholder="Search Document Repository..."]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

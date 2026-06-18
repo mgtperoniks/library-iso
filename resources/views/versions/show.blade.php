@@ -15,10 +15,36 @@
 @endphp
 
 <div style="max-width:1000px;margin:auto;">
-  <h2>{{ $document->doc_code ?? '-' }} — {{ $document->title ?? '-' }}</h2>
-  <p class="small-muted">
+  @if($document && $document->current_version_id && $version && $version->id != $document->current_version_id && $version->status === 'approved')
+    <div style="background-color: #fee4e2; border: 2px solid #b42318; color: #b42318; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        ⚠️ OBSOLETE VERSION — FOR REFERENCE ONLY ⚠️
+    </div>
+  @endif
+
+  <h2><code style="font-family: var(--mono-font); font-size: 20px; background: var(--surface-container); color: var(--on-surface-variant); border-radius: 4px; padding: 2px 8px; font-weight: 600;">{{ $document->doc_code ?? '-' }}</code> — {{ $document->title ?? '-' }}</h2>
+  <p class="small-muted" style="display:flex; align-items:center; gap:8px;">
     Version: <strong>{{ $version->version_label ?? '-' }}</strong>
-    — Status: <strong>{{ $version->status ?? '-' }}</strong>
+    — Status: 
+    @php
+      $statusClass = '';
+      $statusLabel = $version ? ucfirst($version->status) : 'Draft';
+      if ($version) {
+          if ($version->status === 'approved') {
+              $statusClass = 'status-approved';
+              $statusLabel = 'Active';
+          } elseif ($version->status === 'rejected') {
+              $statusClass = 'status-rejected';
+          } elseif ($version->status === 'submitted') {
+              $statusClass = 'status-submitted';
+              $statusLabel = 'Pending Review';
+          } else {
+              $statusClass = 'status-draft';
+          }
+      } else {
+          $statusClass = 'status-draft';
+      }
+    @endphp
+    <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
   </p>
 
   <div style="display:flex;gap:16px;">
@@ -66,8 +92,48 @@
           </div>
         @endif
 
-        <div style="margin-top:10px;">
-          <a class="btn" href="{{ route('documents.show', $document->id ?? 0) }}">Back to Document</a>
+        {{-- Approval History Timeline --}}
+        @if(\Schema::hasTable('approval_logs'))
+          @php
+            $logs = \DB::table('approval_logs')
+                ->where('document_version_id', $version->id)
+                ->join('users', 'users.id', '=', 'approval_logs.user_id')
+                ->select('approval_logs.*', 'users.name as user_name')
+                ->orderBy('approval_logs.created_at', 'asc')
+                ->get();
+          @endphp
+          <div style="margin-top:20px;padding-top:15px;border-top:1px solid #e2e8f0;">
+            <h4 style="margin-top:0;margin-bottom:12px;color:#0b5ed7;">Approval History Timeline</h4>
+            @if($logs->count() > 0)
+              <div style="position:relative;padding-left:20px;border-left:2px solid #e2e8f0;margin-left:10px;">
+                @foreach($logs as $log)
+                  <div style="margin-bottom:12px;position:relative;">
+                    <span style="position:absolute;left:-27px;top:4px;width:12px;height:12px;border-radius:50%;background:#0b5ed7;border:2px solid #fff;"></span>
+                    <div style="font-weight:600;font-size:.9rem;color:#1e293b;">
+                      {{ ucwords(str_replace('_', ' ', $log->action)) }}
+                      <span style="font-weight:normal;color:#64748b;font-size:.8rem;">
+                        by <strong>{{ $log->user_name }}</strong> ({{ ucwords($log->role) }})
+                      </span>
+                    </div>
+                    @if($log->note)
+                      <div style="font-size:.85rem;color:#475569;background:#f8fafc;padding:6px 10px;border-radius:6px;margin-top:4px;display:inline-block;border:1px solid #e2e8f0;">
+                        {{ $log->note }}
+                      </div>
+                    @endif
+                    <div style="font-size:.75rem;color:#94a3b8;margin-top:2px;">
+                      {{ \Carbon\Carbon::parse($log->created_at)->format('Y-m-d H:i:s') }}
+                    </div>
+                  </div>
+                @endforeach
+              </div>
+            @else
+              <p class="small-muted" style="font-style:italic;">No approval logs found for this version.</p>
+            @endif
+          </div>
+        @endif
+
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <a class="btn btn-secondary" href="{{ route('documents.show', $document->id ?? 0) }}"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Back to Document</a>
 
           @php
             $canEdit = false;
@@ -81,7 +147,7 @@
           @endphp
 
           @if($canEdit)
-            <a class="btn" href="{{ route('versions.edit', $version->id) }}">Edit Version</a>
+            <a class="btn btn-primary" href="{{ route('versions.edit', $version->id) }}"><span class="material-symbols-outlined" style="font-size:18px;">edit</span> Edit Version</a>
           @endif
         </div>
       </div>

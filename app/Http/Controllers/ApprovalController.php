@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Schema;
 use App\Models\Document;
 use App\Models\DocumentVersion;
 use Illuminate\Http\Request;
@@ -68,8 +69,7 @@ class ApprovalController extends Controller
         $user = $request->user();
         if (! $user) abort(403);
 
-        $version->load(['document', 'creator']);
-        return view('approval.view', compact('version'));
+        return redirect()->route('versions.show', $version->id);
     }
 
     /**
@@ -114,12 +114,25 @@ class ApprovalController extends Controller
 
             // MR -> forward to DIRECTOR
             if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['mr'])) {
-                $version->update([
-                    'approval_stage' => 'DIRECTOR',
-                    'status' => 'submitted',
-                    'submitted_by' => $user->id,
-                    'submitted_at' => Carbon::now(),
-                ]);
+                if ($version->created_by === $user->id) {
+                    $error = 'Self-approval is prohibited for MR reviews.';
+                    if ($request->wantsJson()) {
+                        return response()->json(['message' => $error], 403);
+                    }
+                    return redirect()->back()->with('error', $error);
+                }
+
+                DB::transaction(function () use ($version, $user, $request) {
+                    $version->update([
+                        'approval_stage' => 'DIRECTOR',
+                        'status' => 'submitted',
+                        'submitted_by' => $user->id,
+                        'submitted_at' => Carbon::now(),
+                    ]);
+
+                    $this->insertApprovalLog($version->id, $user->id, 'mr', 'forward_to_director', 'Forwarded to Director');
+                    $this->maybeAudit('mr_forward_version', $user->id, $version->document_id, $version->id, $request->ip(), ['stage' => 'DIRECTOR']);
+                });
 
                 $message = 'Version forwarded to Director.';
                 if ($request->wantsJson()) {
@@ -130,7 +143,15 @@ class ApprovalController extends Controller
 
             // Director or Admin -> finalize approval
             if (method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['director','admin'])) {
-                DB::transaction(function () use ($version, $user) {
+                if ($version->created_by === $user->id) {
+                    $error = 'Self-approval is prohibited for Director reviews.';
+                    if ($request->wantsJson()) {
+                        return response()->json(['message' => $error], 403);
+                    }
+                    return redirect()->back()->with('error', $error);
+                }
+
+                DB::transaction(function () use ($version, $user, $request) {
                     $version->update([
                         'status' => 'approved',
                         'approval_stage' => 'DONE',
@@ -145,6 +166,10 @@ class ApprovalController extends Controller
                             'revision_date' => Carbon::now(),
                         ]);
                     }
+
+                    $role = $this->getCurrentRoleName($user);
+                    $this->insertApprovalLog($version->id, $user->id, $role, 'approve', 'Approved and promoted');
+                    $this->maybeAudit('director_approve_version', $user->id, $version->document_id, $version->id, $request->ip());
                 });
 
                 $message = 'Version approved and promoted.';
@@ -191,13 +216,19 @@ class ApprovalController extends Controller
         }
 
         try {
-            $version->update([
-                'status' => 'rejected',
-                'approval_stage' => 'DONE',
-                'rejected_by' => $user->id,
-                'rejected_at' => Carbon::now(),
-                'rejected_reason' => $reason,
-            ]);
+            DB::transaction(function () use ($version, $user, $reason, $request) {
+                $version->update([
+                    'status' => 'rejected',
+                    'approval_stage' => 'DONE',
+                    'rejected_by' => $user->id,
+                    'rejected_at' => Carbon::now(),
+                    'rejected_reason' => $reason,
+                ]);
+
+                $role = $this->getCurrentRoleName($user);
+                $this->insertApprovalLog($version->id, $user->id, $role, 'reject', $reason);
+                $this->maybeAudit('reject_version', $user->id, $version->document_id, $version->id, $request->ip(), ['reason' => $reason]);
+            });
 
             $message = 'Version rejected.';
             if ($request->wantsJson()) {
@@ -229,5 +260,49 @@ class ApprovalController extends Controller
             return (int) $rev + 1;
         }
         return 1;
+    }
+
+    protected function getCurrentRoleName($user): string
+    {
+        if (! $user) return 'unknown';
+        if (method_exists($user, 'getRoleNames')) {
+            try { $names = $user->getRoleNames()->toArray(); return $names[0] ?? 'unknown'; } catch (\Throwable) {}
+        }
+        if (method_exists($user, 'roles')) {
+            try { return $user->roles()->pluck('name')->first() ?? 'unknown'; } catch (\Throwable) {}
+        }
+        if (isset($user->roles) && is_iterable($user->roles)) {
+            return collect($user->roles)->pluck('name')->first() ?? 'unknown';
+        }
+        return 'unknown';
+    }
+
+    protected function insertApprovalLog(int $versionId, int $userId, string $role, string $action, ?string $note = null): void
+    {
+        if (! Schema::hasTable('approval_logs')) return;
+        DB::table('approval_logs')->insert([
+            'document_version_id' => $versionId,
+            'user_id'             => $userId,
+            'role'                => $role,
+            'action'              => $action,
+            'note'                => $note,
+            'created_at'          => now(),
+            'updated_at'          => now(),
+        ]);
+    }
+
+    protected function maybeAudit(string $event, $userId = null, $documentId = null, $documentVersionId = null, $ip = null, $detail = [])
+    {
+        if (! class_exists(\App\Models\AuditLog::class)) return;
+        try {
+            \App\Models\AuditLog::create([
+                'event' => $event,
+                'user_id' => $userId,
+                'document_id' => $documentId,
+                'document_version_id' => $documentVersionId,
+                'detail' => json_encode($detail),
+                'ip' => $ip,
+            ]);
+        } catch (\Throwable) { /* ignore */ }
     }
 }

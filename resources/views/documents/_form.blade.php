@@ -217,7 +217,7 @@
             Save
         </button>
 
-        <button type="button" class="btn btn-muted" id="cancelFormBtn">Cancel</button>
+        <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
     </div>
 </form>
 

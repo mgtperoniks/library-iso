@@ -102,7 +102,7 @@ class DraftController extends Controller
         }
 
         // show view (you can reuse documents.edit or a drafts.edit as you have)
-        return view('drafts.edit', [
+        return view('versions.edit', [
             'version' => $version,
             'document' => $version->document,
             'departments' => $departments,
