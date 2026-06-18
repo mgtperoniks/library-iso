@@ -234,3 +234,10 @@ $isoRoutes = base_path('routes/iso_documents.php');
 if (file_exists($isoRoutes)) {
     require $isoRoutes;
 }
+
+// Quality Objectives Module Routes
+$qoRoutes = base_path('routes/quality_objectives.php');
+if (file_exists($qoRoutes)) {
+    require $qoRoutes;
+}
+

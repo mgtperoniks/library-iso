@@ -409,6 +409,29 @@
       </a>
     </div>
 
+    {{-- QUALITY MANAGEMENT group --}}
+    <div class="iso-nav-group">
+      <span class="iso-nav-group-label">Quality Management</span>
+
+      <a href="{{ route('quality-objectives.dashboard') }}"
+         class="iso-nav-link {{ request()->routeIs('quality-objectives.dashboard') ? 'active' : '' }}">
+        <span class="material-symbols-outlined">monitoring</span>
+        QMS Dashboard
+      </a>
+
+      <a href="{{ route('quality-objectives.objectives.index') }}"
+         class="iso-nav-link {{ request()->routeIs('quality-objectives.objectives.*') ? 'active' : '' }}">
+        <span class="material-symbols-outlined">track_changes</span>
+        Quality Objectives
+      </a>
+
+      <a href="{{ route('quality-objectives.periods.index') }}"
+         class="iso-nav-link {{ request()->routeIs('quality-objectives.periods.*') ? 'active' : '' }}">
+        <span class="material-symbols-outlined">calendar_today</span>
+        Periode Sasaran
+      </a>
+    </div>
+
     {{-- USER section --}}
     @auth
       <div class="iso-sidebar-footer">

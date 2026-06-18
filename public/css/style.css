@@ -661,4 +661,148 @@ label[for="upload_type_top"] {
      to the hard-coded defaults used throughout (colors set directly where critical).
    - Grid & gap are used; for IE11 consider using flex alternatives or simple stacked layout.
    - @import Google Fonts requires Internet — remove if running on isolated LAN.
------------------------------------------------------------------- */
+/* ---------- QUALITY OBJECTIVES SYSTEM ---------- */
+.badge-excellent {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+}
+.badge-on_track,
+.badge-on-track {
+    background: #dcfce7 !important;
+    color: #15803d !important;
+}
+.badge-at_risk,
+.badge-at-risk {
+    background: #fef9c3 !important;
+    color: #a16207 !important;
+}
+.badge-off_track,
+.badge-off-track {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+.badge-not_reported,
+.badge-not-reported {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+}
+
+/* trend indicators */
+.trend-up {
+    color: #10b981;
+    font-weight: 700;
+}
+.trend-down {
+    color: #ef4444;
+    font-weight: 700;
+}
+.trend-stable {
+    color: #6b7280;
+    font-weight: 700;
+}
+.trend-unknown {
+    color: #9ca3af;
+}
+
+/* KPI Dashboard Cards */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.kpi-card {
+    padding: 16px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #c3c6d7;
+    box-shadow: 0 2px 4px rgba(25, 27, 35, 0.04);
+}
+.kpi-card .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #737686;
+    margin-bottom: 4px;
+}
+.kpi-card .kpi-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #191b23;
+}
+
+/* Compact Control Tower Cards */
+.kpi-row-compact {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 12px;
+}
+@media (max-width: 768px) {
+    .kpi-row-compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.kpi-card-compact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #c3c6d7;
+    box-shadow: 0 1px 3px rgba(25, 27, 35, 0.03);
+}
+.kpi-card-compact .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #737686;
+    margin: 0;
+}
+.kpi-card-compact .kpi-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #191b23;
+    margin: 0;
+}
+
+/* Secondary statistics inline container */
+.kpi-secondary-row {
+    background: #f3f4f6;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 24px;
+    font-size: 12px;
+    color: #4b5563;
+    align-items: center;
+}
+.kpi-secondary-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Overdue and Due soon alert styling */
+.row-overdue {
+    background-color: rgba(254, 226, 226, 0.5) !important;
+}
+.row-due-soon {
+    background-color: rgba(254, 243, 199, 0.5) !important;
+}
+
+/* Control Tower Balanced Dashboard Grid */
+.control-tower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+@media (max-width: 1024px) {
+    .control-tower-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
