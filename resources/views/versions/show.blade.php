@@ -21,10 +21,30 @@
     </div>
   @endif
 
-  <h2>{{ $document->doc_code ?? '-' }} — {{ $document->title ?? '-' }}</h2>
-  <p class="small-muted">
+  <h2><code style="font-family: var(--mono-font); font-size: 20px; background: var(--surface-container); color: var(--on-surface-variant); border-radius: 4px; padding: 2px 8px; font-weight: 600;">{{ $document->doc_code ?? '-' }}</code> — {{ $document->title ?? '-' }}</h2>
+  <p class="small-muted" style="display:flex; align-items:center; gap:8px;">
     Version: <strong>{{ $version->version_label ?? '-' }}</strong>
-    — Status: <strong>{{ $version->status ?? '-' }}</strong>
+    — Status: 
+    @php
+      $statusClass = '';
+      $statusLabel = $version ? ucfirst($version->status) : 'Draft';
+      if ($version) {
+          if ($version->status === 'approved') {
+              $statusClass = 'status-approved';
+              $statusLabel = 'Active';
+          } elseif ($version->status === 'rejected') {
+              $statusClass = 'status-rejected';
+          } elseif ($version->status === 'submitted') {
+              $statusClass = 'status-submitted';
+              $statusLabel = 'Pending Review';
+          } else {
+              $statusClass = 'status-draft';
+          }
+      } else {
+          $statusClass = 'status-draft';
+      }
+    @endphp
+    <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
   </p>
 
   <div style="display:flex;gap:16px;">
@@ -112,8 +132,8 @@
           </div>
         @endif
 
-        <div style="margin-top:10px;">
-          <a class="btn" href="{{ route('documents.show', $document->id ?? 0) }}">Back to Document</a>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <a class="btn btn-secondary" href="{{ route('documents.show', $document->id ?? 0) }}"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Back to Document</a>
 
           @php
             $canEdit = false;
@@ -127,7 +147,7 @@
           @endphp
 
           @if($canEdit)
-            <a class="btn" href="{{ route('versions.edit', $version->id) }}">Edit Version</a>
+            <a class="btn btn-primary" href="{{ route('versions.edit', $version->id) }}"><span class="material-symbols-outlined" style="font-size:18px;">edit</span> Edit Version</a>
           @endif
         </div>
       </div>

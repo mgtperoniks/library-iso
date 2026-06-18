@@ -6,7 +6,7 @@
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
   <h2 style="margin:0">Documents</h2>
   <div>
-    <a class="btn" href="{{ route('documents.create') }}">+ New Document</a>
+    <a class="btn btn-primary" href="{{ route('documents.create') }}"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Document</a>
   </div>
 </div>
 
@@ -30,10 +30,9 @@
       @endforeach
     </select>
 
-    <button class="btn" type="submit">Filter</button>
+    <button class="btn btn-primary" type="submit">Filter</button>
 
-    <a href="{{ route('documents.index') }}"
-       style="align-self:center;margin-left:6px;color:var(--muted);text-decoration:none;">
+    <a href="{{ route('documents.index') }}" class="btn btn-secondary" style="margin-left:6px;">
       Reset
     </a>
   </div>
@@ -95,22 +94,22 @@
             {{-- Status badge --}}
             @switch($d->currentVersion->status)
               @case('approved')
-                <span class="badge badge-success">approved</span>
+                <span class="status-badge status-approved">approved</span>
                 @break
               @case('rejected')
-                <span class="badge badge-danger">rejected</span>
+                <span class="status-badge status-rejected">rejected</span>
                 @break
               @default
-                <span class="badge badge-warning">{{ $d->currentVersion->status }}</span>
+                <span class="status-badge status-submitted">{{ $d->currentVersion->status }}</span>
             @endswitch
 
             {{-- Text badge --}}
             @if($d->currentVersion->pasted_text)
-              <span class="badge badge-info">pasted</span>
+              <span class="badge status-review">pasted</span>
             @elseif($d->currentVersion->plain_text)
-              <span class="badge badge-success">indexed</span>
+              <span class="badge status-approved">indexed</span>
             @else
-              <span class="badge badge-warning">no-text</span>
+              <span class="badge status-draft">no-text</span>
             @endif
 
           </div>

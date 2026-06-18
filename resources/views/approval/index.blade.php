@@ -4,29 +4,18 @@
 
 @section('content')
 <div class="container page-card">
-    <header class="site-header" role="banner" aria-labelledby="approvalTitle" style="display:flex;justify-content:space-between;align-items:center;">
-        <div class="brand" style="display:flex;gap:12px;align-items:center">
-            <div class="logo">ISO</div>
-            <div class="brand-text">
-                <h1 id="approvalTitle" style="margin:0">Approval Queue</h1>
-                <div class="sub" style="font-size:0.95rem;color:#6b7280">
-                    Stage — {{ e($stage ?? ($userRoleLabel ?? 'ALL')) }}
-                </div>
-            </div>
+    <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div class="small-muted" style="font-size:0.95rem; color:#4b5563;">
+            Stage — <strong>{{ $stage ?? ($userRoleLabel ?? 'ALL') }}</strong>
         </div>
-
-        <nav class="main-nav" aria-label="actions" style="display:flex;gap:8px">
-            <a href="{{ route('drafts.index') }}" class="btn">Draft Container</a>
-            <button type="button" class="btn btn-muted" onclick="location.reload()">Refresh</button>
-        </nav>
-    </header>
+    </div>
 
     {{-- toolbar --}}
     <div class="mb-3" style="display:flex;gap:8px;align-items:center;margin-top:1rem">
-        <a href="{{ route('drafts.index') }}" class="btn">Draft Container</a>
-        <button class="btn btn-muted" onclick="location.reload()">Refresh</button>
+        <a href="{{ route('drafts.index') }}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">draft</span> Draft Container</a>
+        <button class="btn btn-secondary" onclick="location.reload()"><span class="material-symbols-outlined" style="font-size:18px;">refresh</span> Refresh</button>
 
-        <button id="compareSelectedBtn" class="btn btn-outline-secondary" style="margin-left:10px;">Compare selected</button>
+        <button id="compareSelectedBtn" class="btn btn-outline" style="margin-left:10px;"><span class="material-symbols-outlined" style="font-size:18px;">compare</span> Compare selected</button>
     </div>
 
     <section class="table-responsive card-section card-inner" aria-labelledby="pendingTableTitle">
@@ -42,7 +31,7 @@
                     <th>Versi</th>
                     <th>Pengaju</th>
                     <th>When</th>
-                    <th style="width:270px">Aksi</th>
+                    <th style="width:320px; white-space:nowrap;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,40 +60,40 @@
                             <input class="select-version" type="checkbox"
                                    value="{{ $versionIdAttr }}"
                                    data-doc="{{ $docIdAttr }}"
-                                   aria-label="Select version {{ e($versionLabel) }}"
+                                   aria-label="Select version {{ $versionLabel }}"
                                    disabled>
                         </td>
 
-                        <td>
+                        <td style="font-family: var(--mono); white-space: nowrap;">
                             @if($docId)
                                 <a href="{{ route('documents.show', $docId) }}" target="_blank" rel="noopener noreferrer">
-                                    {{ e($docCode) }}
+                                    {{ $docCode }}
                                 </a>
                             @else
-                                {{ e($docCode) }}
+                                {{ $docCode }}
                             @endif
                         </td>
 
                         <td>{{ \Illuminate\Support\Str::limit($title, 120) }}</td>
-                        <td>{{ e($dept) }}</td>
-                        <td>{{ e($versionLabel) }}</td>
-                        <td>{{ e($creatorDisplay) }}</td>
-                        <td>{{ e($when) }}</td>
+                        <td>{{ $dept }}</td>
+                        <td>{{ $versionLabel }}</td>
+                        <td>{{ $creatorDisplay }}</td>
+                        <td>{{ $when }}</td>
 
                         <td>
-                            <div class="action-buttons" style="display:flex;gap:6px;flex-wrap:wrap">
+                            <div class="action-buttons" style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;">
                                 {{-- Open (no inline JS; data attributes used) --}}
                                 @if(!empty($v->id))
                                     <a href="{{ route('versions.show', $v->id) }}"
                                        target="_blank"
                                        rel="noopener noreferrer"
-                                       class="btn btn-outline-primary btn-sm action-open"
-                                       aria-label="Open version {{ e($versionLabel) }}"
+                                       class="btn btn-outline action-open"
+                                       aria-label="Open version {{ $versionLabel }}"
                                        data-version-id="{{ $versionIdAttr }}">
                                         Open
                                     </a>
                                 @else
-                                    <button class="btn btn-outline-primary btn-sm" disabled>Open</button>
+                                    <button class="btn btn-outline" disabled>Open</button>
                                 @endif
 
                                 {{-- Compare (single) --}}
@@ -112,12 +101,12 @@
                                     <a href="{{ route('documents.compare', $docId) }}?v2={{ $v->id }}"
                                        target="_blank"
                                        rel="noopener noreferrer"
-                                       class="btn btn-outline-secondary btn-sm action-compare"
-                                       aria-label="Compare version {{ e($versionLabel) }}">
+                                       class="btn btn-outline action-compare"
+                                       aria-label="Compare version {{ $versionLabel }}">
                                         Compare
                                     </a>
                                 @else
-                                    <button class="btn btn-outline-secondary btn-sm" disabled>Compare</button>
+                                    <button class="btn btn-outline" disabled>Compare</button>
                                 @endif
 
                                 {{-- Approve (form) - tombol sekarang default AKTIF --}}
@@ -127,17 +116,17 @@
                                       style="display:inline">
                                     @csrf
                                     <button type="submit"
-                                            class="btn btn-success btn-sm btn-approve">
+                                            class="btn btn-success btn-approve">
                                         Approve
                                     </button>
                                 </form>
 
                                 {{-- Reject - tombol sekarang default AKTIF --}}
                                 <button type="button"
-                                        class="btn btn-danger btn-sm btn-reject"
-                                        data-version-id="{{ e($v->id) }}"
-                                        data-doc-code="{{ e($docCode) }}"
-                                        aria-label="Reject version {{ e($versionLabel) }}">
+                                        class="btn btn-danger btn-reject"
+                                        data-version-id="{{ $v->id }}"
+                                        data-doc-code="{{ $docCode }}"
+                                        aria-label="Reject version {{ $versionLabel }}">
                                     Reject
                                 </button>
                             </div>
@@ -199,7 +188,7 @@
 
     <div class="modal-footer"
          style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
-      <button class="btn btn-muted" type="button" onclick="closeRejectModal()">Batal</button>
+      <button class="btn btn-secondary" type="button" onclick="closeRejectModal()">Batal</button>
       <button id="rejectSubmitBtn" class="btn btn-danger" type="button">Submit Reject</button>
     </div>
   </div>

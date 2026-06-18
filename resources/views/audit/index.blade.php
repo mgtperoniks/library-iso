@@ -1,17 +1,12 @@
 @extends('layouts.iso')
 
+@section('title', 'Audit Trail')
+
 @section('content')
-<h2>Audit Log</h2>
+<h2>Audit Trail</h2>
 <p>Recent file/version events (proxy for audit trail).</p>
 
-<style>
-  .table { width:100%; border-collapse: collapse; }
-  .table th, .table td { border:1px solid #e5e5e5; padding:8px; text-align:left; }
-  .table thead th { background:#f7f7f7; }
-  .btn { padding:6px 10px; border:1px solid #ccc; background:#fff; cursor:pointer; text-decoration:none; display:inline-block; }
-  .btn:hover { background:#f0f0f0; }
-  .muted { color:#666; font-size:.9rem; }
-</style>
+
 
 <div style="background:#fff; border:1px solid #eef3f8; border-radius:10px; padding:15px; margin-bottom:18px;">
   <form method="GET" action="{{ route('audit.index') }}" style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;">
@@ -42,9 +37,9 @@
     </div>
 
     <div style="display:flex; gap:8px;">
-      <button type="submit" class="btn btn-primary" style="padding:8px 16px; border:none; color:#fff; cursor:pointer;">Apply</button>
-      <a href="{{ route('audit.index') }}" class="btn" style="padding:8px 16px; background:#f1f5f9; border:1px solid #cbd5e1; color:#475569; text-decoration:none; display:inline-block; vertical-align:middle;">Reset</a>
-      <a class="btn" href="{{ route('audit.index', array_merge(request()->query(), ['export' => 'csv'])) }}" style="padding:8px 16px; background:#fff; border:1px solid #0b5ed7; color:#0b5ed7; text-decoration:none; display:inline-block; vertical-align:middle;">Export CSV</a>
+      <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">filter_alt</span> Apply</button>
+      <a href="{{ route('audit.index') }}" class="btn btn-secondary"><span class="material-symbols-outlined" style="font-size:18px;">restart_alt</span> Reset</a>
+      <a class="btn btn-outline" href="{{ route('audit.index', array_merge(request()->query(), ['export' => 'csv'])) }}"><span class="material-symbols-outlined" style="font-size:18px;">download</span> Export CSV</a>
     </div>
 
   </form>
@@ -70,14 +65,30 @@
         <tr>
           <td>{{ $e->created_at?->format('Y-m-d H:i') }}</td>
           <td>{{ $e->event }}</td>
-          <td>{{ $e->document->doc_code ?? '-' }}</td>
+          <td style="font-family: var(--mono); white-space: nowrap;">{{ $e->document->doc_code ?? '-' }}</td>
           <td>{{ $e->version->version_label ?? '-' }}</td>
           <td>{{ $e->user->email ?? $e->user->name ?? '-' }}</td>
           <td>
             @php
-              // tampilkan detail pendek; jika JSON panjang, potong
-              $detail = is_string($e->detail) ? $e->detail : json_encode($e->detail);
-              $short  = Str::limit($detail, 120);
+              $detailText = '-';
+              if ($e->detail) {
+                  $decoded = is_string($e->detail) ? json_decode($e->detail, true) : $e->detail;
+                  if (is_array($decoded)) {
+                      $parts = [];
+                      foreach ($decoded as $key => $val) {
+                          if (is_array($val)) {
+                              $val = json_encode($val);
+                          } elseif (is_bool($val)) {
+                              $val = $val ? 'true' : 'false';
+                          }
+                          $parts[] = ucwords(str_replace('_', ' ', $key)) . ': ' . $val;
+                      }
+                      $detailText = implode(', ', $parts);
+                  } else {
+                      $detailText = (string)$e->detail;
+                  }
+              }
+              $short = Str::limit($detailText, 120);
             @endphp
             {{ $short ?: '-' }}
           </td>

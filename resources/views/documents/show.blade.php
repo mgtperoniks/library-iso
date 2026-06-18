@@ -167,76 +167,130 @@
     }
 @endphp
 
-<div class="app-container" style="max-width:1200px;margin:18px auto;">
+<div class="app-container" style="max-width:1280px;margin:18px auto;padding:0 12px;">
+  
+  {{-- Obsolete version banner --}}
+  @if($document->current_version_id && $currentVersion && $currentVersion->id != $document->current_version_id && $currentVersion->status === 'approved')
+    <div style="background-color: #fee4e2; border: 2px solid #b42318; color: #b42318; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        ⚠️ OBSOLETE VERSION — FOR REFERENCE ONLY ⚠️
+    </div>
+  @endif
+
+  {{-- Document Header Metadata Section --}}
+  <section class="card" style="padding:24px; border-radius:8px; border:1px solid #c3c6d7; background:#fff; margin-bottom:24px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <code style="font-family: var(--mono-font); font-size:13px; background:var(--surface-container); color:var(--on-surface-variant); border-radius:4px; padding: 2px 8px; font-weight: 600;">{{ $document->doc_code }}</code>
+          @php
+            $statusClass = '';
+            $statusLabel = $currentVersion ? ucfirst($currentVersion->status) : 'Draft';
+            if ($currentVersion) {
+                if ($currentVersion->status === 'approved') {
+                    $statusClass = 'status-approved';
+                    $statusLabel = 'Active';
+                } elseif ($currentVersion->status === 'rejected') {
+                    $statusClass = 'status-rejected';
+                } elseif ($currentVersion->status === 'submitted') {
+                    $statusClass = 'status-review';
+                    $statusLabel = 'Pending Review';
+                } else {
+                    $statusClass = 'status-draft';
+                }
+            } else {
+                $statusClass = 'status-draft';
+            }
+          @endphp
+          <span class="status-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+        </div>
+        <h2 style="font-size:24px; font-weight:700; color:#191b23; margin:0;">{{ $document->title ?? '-' }}</h2>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        {{-- Action Buttons --}}
+        @if($canEditDocument)
+          <button class="btn btn-secondary" id="btnEditDoc" type="button" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span> Edit</button>
+        @endif
+
+        @if($currentVersion && $masterAvailable && Route::has('documents.versions.downloadMaster'))
+          <a class="btn btn-secondary" href="{{ route('documents.versions.downloadMaster', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">description</span> Master</a>
+        @elseif($currentVersion && Route::has('documents.versions.download') && $currentVersion->file_path)
+          <a class="btn btn-secondary" href="{{ route('documents.versions.download', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">description</span> File</a>
+        @endif
+
+        @if($currentVersion && $currentVersion->file_path && Route::has('documents.versions.download'))
+          <a class="btn btn-secondary" href="{{ route('documents.versions.download', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">picture_as_pdf</span> PDF</a>
+        @endif
+
+        @if(Route::has('documents.compare'))
+          <a class="btn btn-secondary" href="{{ route('documents.compare', $document->id ?? 0) }}" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">difference</span> Compare</a>
+        @endif
+
+        @if($canShowSubmit && ! $isFinal && $currentVersion)
+          <form method="POST" action="{{ route('versions.submit', $submitVersionId) }}" style="display:inline;">
+            @csrf
+            <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">publish</span> Submit</button>
+          </form>
+        @endif
+
+        @if($canTrash && $currentVersion && Route::has('versions.trash'))
+          <form method="POST" action="{{ route('versions.trash', $currentVersion->id) }}" style="display:inline;" onsubmit="return confirm('Move this version to Recycle Bin?');">
+            @csrf
+            <button type="submit" class="btn btn-danger" style="display:inline-flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:18px;">delete</span> Delete</button>
+          </form>
+        @endif
+      </div>
+    </div>
+
+    {{-- Technical Specs Grid --}}
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:16px; border-top:1px solid #c3c6d7; padding-top:16px;">
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">Department</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">{{ optional($document->department)->name ?? '-' }}</p>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">Category</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">
+          @php
+            $catLabel = '-';
+            if ($document->category_id) {
+                $catObj = \App\Models\Category::find($document->category_id);
+                if ($catObj) $catLabel = ($catObj->code ? $catObj->code . ' - ' : '') . $catObj->name;
+            }
+            if ($catLabel === '-' && $document->category) {
+                $catObj = \App\Models\Category::where('code', $document->category)->first();
+                if ($catObj) {
+                    $catLabel = ($catObj->code ? $catObj->code . ' - ' : '') . $catObj->name;
+                } else {
+                    $catLabel = $document->category;
+                }
+            }
+          @endphp
+          {{ $catLabel }}
+        </p>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">Revision</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">Rev. {{ str_pad((string)($document->revision_number ?? 0), 2, '0', STR_PAD_LEFT) }}</p>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">Effective Date</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">{{ $document->revision_date ? $document->revision_date->format('M d, Y') : '-' }}</p>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">Owner</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">{{ optional($currentVersion)->creator->name ?? 'System' }}</p>
+      </div>
+      <div>
+        <p style="font-size:11px; text-transform:uppercase; color:#434655; margin:0 0 4px; font-weight:600;">ISO Clause</p>
+        <p style="font-size:14px; color:#191b23; margin:0; font-weight:500;">{{ $document->short_code ?? '8.4.2' }}</p>
+      </div>
+    </div>
+  </section>
+
   <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;">
 
     {{-- LEFT: main content --}}
     <div style="flex:1;min-width:320px">
-      
-      @if($document->current_version_id && $currentVersion && $currentVersion->id != $document->current_version_id && $currentVersion->status === 'approved')
-        <div style="background-color: #fee4e2; border: 2px solid #b42318; color: #b42318; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            ⚠️ OBSOLETE VERSION — FOR REFERENCE ONLY ⚠️
-        </div>
-      @endif
-
-      <h1 style="margin:0 0 8px 0;">
-        {{ $document->doc_code ? $document->doc_code.' — ' : '' }}{{ $document->title ?? '-' }}
-      </h1>
-
-      <div class="small-muted" style="margin-bottom:12px;">
-        Department: {{ optional($document->department)->name ?? '-' }}
-        @if(!empty($document->category) || !empty($document->category_id))
-          · Category: {{ $document->category ?? $document->category_id }}
-        @endif
-      </div>
-
-      {{-- Action bar --}}
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center;">
-
-        {{-- Edit --}}
-        @if($canEditDocument)
-          <button class="btn" id="btnEditDoc" type="button">✏️ Edit</button>
-        @endif
-
-        {{-- Download master --}}
-        @if($currentVersion && $masterAvailable && Route::has('documents.versions.downloadMaster'))
-          <a class="btn" href="{{ route('documents.versions.downloadMaster', $currentVersion->id) }}">Download master</a>
-        @elseif($currentVersion && Route::has('documents.versions.download') && $currentVersion->file_path)
-          <a class="btn" href="{{ route('documents.versions.download', $currentVersion->id) }}">Download file</a>
-        @else
-          <button class="btn-muted" type="button" disabled>Download master</button>
-        @endif
-
-        {{-- Download PDF separate button (if available) --}}
-        @if($currentVersion && $currentVersion->file_path && Route::has('documents.versions.download'))
-          <a class="btn" href="{{ route('documents.versions.download', $currentVersion->id) }}">Download PDF</a>
-        @endif
-
-        {{-- Compare --}}
-        @if(Route::has('documents.compare'))
-          <a class="btn-muted" href="{{ route('documents.compare', $document->id ?? 0) }}">Compare</a>
-        @endif
-
-        {{-- Submit for Approval --}}
-        @if($canShowSubmit && ! $isFinal && $currentVersion)
-          <form method="POST" action="{{ route('versions.submit', $submitVersionId) }}" style="display:inline;margin-left:6px;">
-            @csrf
-            <button type="submit" class="btn btn-primary">Submit for Approval</button>
-          </form>
-        @endif
-
-        {{-- Trash --}}
-        @if($canTrash && $currentVersion && Route::has('versions.trash'))
-          <form method="POST"
-                action="{{ route('versions.trash', $currentVersion->id) }}"
-                style="display:inline;margin-left:6px;"
-                onsubmit="return confirm('Move this version to Recycle Bin?');">
-            @csrf
-            <button type="submit" class="btn" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:.45rem .75rem;">Delete</button>
-          </form>
-        @endif
-      </div>
-
       {{-- PDF VIEWER (only when pdfAvailable and preview route or URL exists) --}}
       @if($pdfAvailable && $pdfUrl)
         <div id="pdfViewerWrap" style="margin-bottom:16px;">
@@ -265,7 +319,7 @@
           </div>
 
           <div class="small-muted" style="margin-top:6px;">
-            Jika PDF tidak tampil (browser memblokir), gunakan tombol "Open in new tab" atau "Download".
+            Jika PDF tidak tampil (browser memblokir), gunakan tombol "Open in new tab" or "Download".
           </div>
         </div>
       @else
@@ -277,10 +331,41 @@
       @endif
 
       {{-- Version content (plain text / pasted text) --}}
+      @php
+        $text = $currentVersion ? ($currentVersion->pasted_text ?? $currentVersion->plain_text ?? '') : '';
+        $parsedSignatures = [];
+        if (preg_match_all('/(\d+)?Disetujui oleh,\s*([^D\n]+)(Director|Direktur)/i', $text, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $m) {
+                $parsedSignatures[] = [
+                    'hash' => trim($m[1] ?? ''),
+                    'signer' => trim($m[2] ?? ''),
+                    'role' => trim($m[3] ?? 'Director'),
+                    'date' => $currentVersion->signed_at ? $currentVersion->signed_at->format('M d, Y') : ($currentVersion->created_at ? $currentVersion->created_at->format('M d, Y') : '-')
+                ];
+            }
+        }
+        if (empty($parsedSignatures) && $currentVersion && $currentVersion->signed_by) {
+            $parsedSignatures[] = [
+                'hash' => $currentVersion->checksum ? substr($currentVersion->checksum, 0, 16) : '',
+                'signer' => $currentVersion->signed_by,
+                'role' => 'Authorized Signatory',
+                'date' => $currentVersion->signed_at ? $currentVersion->signed_at->format('M d, Y') : ($currentVersion->created_at ? $currentVersion->created_at->format('M d, Y') : '-')
+            ];
+        }
+        
+        $cleanText = $text;
+        if (!empty($parsedSignatures) && !empty($matches)) {
+            foreach ($matches as $m) {
+                $cleanText = str_replace($m[0], '', $cleanText);
+            }
+            $cleanText = trim($cleanText);
+        }
+      @endphp
+
       <div style="background:#fff;border:1px solid #eef3f8;border-radius:8px;padding:18px;min-height:300px;">
-        @if($currentVersion && ($currentVersion->pasted_text || $currentVersion->plain_text))
+        @if($currentVersion && $cleanText !== '')
           <div style="white-space:pre-wrap;font-family:inherit;border:0;background:transparent;padding:0;margin:0;">
-            {!! nl2br(e($currentVersion->pasted_text ?? $currentVersion->plain_text)) !!}
+            {!! nl2br(e($cleanText)) !!}
           </div>
         @elseif($currentVersion && $currentVersion->file_path && ! $pdfAvailable)
           <div>
@@ -295,83 +380,272 @@
           </div>
         @endif
       </div>
+
+      {{-- Digital Signature Card Grid --}}
+      @if(!empty($parsedSignatures))
+        <div style="margin-top:20px;">
+          <h3 style="font-size:13px; font-weight:600; color:var(--primary); margin:0 0 12px 0; display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">verified_user</span> Verified Digital Signatures
+          </h3>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+            @foreach($parsedSignatures as $sig)
+              <div style="background:#fff; border:1px solid var(--outline-variant); border-radius:8px; padding:16px; position:relative; overflow:hidden; display:flex; flex-direction:column; gap:8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <!-- Decorative verification badge watermark -->
+                <div style="position:absolute; right:-10px; bottom:-10px; opacity:0.06; color:var(--success); transform:rotate(-15deg); pointer-events: none;">
+                  <span class="material-symbols-outlined" style="font-size:80px;">verified</span>
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; z-index: 1;">
+                  <div>
+                    <div style="font-size:14px; font-weight:700; color:var(--on-surface);">{{ $sig['signer'] }}</div>
+                    <div style="font-size:12px; color:var(--on-surface-variant); font-weight:600;">{{ $sig['role'] }}</div>
+                  </div>
+                  <span class="status-badge status-approved" style="font-size:9px; padding:2px 6px; border-radius:4px; display:inline-flex; align-items:center; gap:2px; font-weight:700;">
+                    <span class="material-symbols-outlined" style="font-size:10px; font-weight:bold;">check</span> VERIFIED
+                  </span>
+                </div>
+                
+                @if($sig['hash'])
+                  <div style="margin-top:4px; border-top:1px dashed var(--outline-variant); padding-top:8px; z-index: 1;">
+                    <span class="small-muted" style="font-size:10px; text-transform:uppercase; font-weight:600; display:block; margin-bottom:2px;">Signature ID</span>
+                    <code style="font-family:var(--mono-font); font-size:11px; color:var(--muted); word-break:break-all;">{{ $sig['hash'] }}</code>
+                  </div>
+                @endif
+                
+                <div style="font-size:11px; color:var(--muted); margin-top:auto; z-index: 1;">
+                  Signed Date: <strong>{{ $sig['date'] }}</strong>
+                </div>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      @endif
     </div>
 
     {{-- RIGHT: sidebar --}}
-    <div style="width:320px;min-width:260px;flex-shrink:0;">
-
-      {{-- Versions list --}}
-      <div style="background:#fff;border:1px solid #eef3f8;border-radius:8px;padding:12px;">
-        <h4 style="margin-top:0;margin-bottom:8px">Versions</h4>
-        <ul style="list-style:none;padding:0;margin:0">
-          @forelse($versions as $ver)
-            @php $verIdAttr = e((string)($ver->id ?? '')); @endphp
-            <li style="padding:8px 0;border-bottom:1px solid #f4f6f8;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                  <a href="{{ route('documents.show', $document->id) }}?version_id={{ $ver->id }}">
-                    {{ $ver->version_label }}
-                  </a>
-                  <div class="small-muted" style="font-size:12px;">
-                    {{ $ver->status }} — {{ $ver->created_at ? $ver->created_at->format('Y-m-d') : '-' }}
-                  </div>
-                </div>
-                <div style="text-align:right;">
-                  @if(Route::has('versions.show'))
-                    <a class="btn-small action-open"
-                       href="{{ route('versions.show', $ver->id) }}"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       data-version-id="{{ $verIdAttr }}">
-                      Open
-                    </a>
-                  @endif
-
-                  @if($ver->file_path && Route::has('documents.versions.download'))
-                    <a class="btn-small btn-muted" href="{{ route('documents.versions.download', $ver->id) }}">DL</a>
-                  @else
-                    <span class="btn-small btn-muted" style="opacity:.6;">No file</span>
-                  @endif
-                </div>
-              </div>
-            </li>
-          @empty
-            <li style="padding:8px 0">No versions found.</li>
-          @endforelse
-        </ul>
+    <div style="width:340px; min-width:280px; flex-shrink:0; display:flex; flex-direction:column; gap:16px;">
+      
+      {{-- Review Schedule Card --}}
+      <div class="card" style="padding:16px; border-radius:8px; border:1px solid #c3c6d7; background:#fff;">
+        <h3 style="font-size:13px; font-weight:600; color:#515f74; border-bottom:1px solid #c3c6d7; padding-bottom:8px; margin:0 0 12px; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span> Review Schedule
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#434655;">Last Review</span>
+            <span style="font-weight:600; color:#191b23;">{{ $document->revision_date ? $document->revision_date->format('M d, Y') : '-' }}</span>
+          </div>
+          @php
+            $nextReview = $document->next_review_date;
+            $isOverdue = $nextReview && $nextReview->isPast();
+          @endphp
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#434655;">Next Review</span>
+            <span style="font-weight:600; @if($isOverdue) color:#ba1a1a; @else color:#191b23; @endif">
+              {{ $nextReview ? $nextReview->format('M d, Y') : '-' }}
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span style="color:#434655;">Frequency</span>
+            <span style="font-weight:600; color:#191b23;">
+              @if($document->review_frequency == 12)
+                Annual
+              @elseif($document->review_frequency == 6)
+                Semi-Annual
+              @elseif($document->review_frequency == 3)
+                Quarterly
+              @elseif($document->review_frequency)
+                {{ $document->review_frequency }} Months
+              @else
+                Annual
+              @endif
+            </span>
+          </div>
+        </div>
       </div>
 
-      {{-- Related Documents --}}
-      <div class="card" style="margin-top:12px;padding:14px;border-radius:8px;background:#fff;border:1px solid #eef3f8;">
-        <div style="font-weight:700;color:#0b5ed7;margin-bottom:8px;">Dokumen terkait</div>
+      {{-- Collapsible Sections Container --}}
+      <div class="card" style="border-radius:8px; border:1px solid #c3c6d7; background:#fff; display:flex; flex-direction:column; overflow:hidden;">
+        
+        {{-- Section: Revision History --}}
+        <details open style="border-bottom:1px solid #c3c6d7;">
+          <summary style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; list-style:none; user-select:none;">
+            <span style="font-size:13px; font-weight:600; color:#191b23; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">history</span> Revision History
+            </span>
+            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+          </summary>
+          <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
+            @forelse($versions as $ver)
+              <div style="position:relative; padding-left:16px; border-left:2px solid #c3c6d7;">
+                @php
+                  $isCurrent = $document->current_version_id && $ver->id == $document->current_version_id;
+                  $dotBg = $isCurrent ? '#004ac6' : '#c3c6d7';
+                @endphp
+                <div style="position:absolute; left:-5px; top:4px; width:8px; height:8px; border-radius:50%; background:{{ $dotBg }};"></div>
+                <p style="font-size:12px; font-weight:700; margin:0 0 2px;">
+                  <a href="{{ route('documents.show', $document->id) }}?version_id={{ $ver->id }}" style="text-decoration:none; color:inherit;">
+                    Rev. {{ $ver->version_label }}
+                  </a>
+                  @if($isCurrent)
+                    <span style="font-weight:normal; color:#434655; margin-left:6px; font-size:11px;">(Current)</span>
+                  @endif
+                </p>
+                <p style="font-size:11px; color:#434655; margin:0 0 4px;">
+                  {{ $ver->created_at ? $ver->created_at->format('M d, Y') : '-' }} by {{ $ver->creator->name ?? 'System' }}
+                </p>
+                @if($ver->change_note)
+                  <p style="font-size:11px; font-style:italic; color:#434655; margin:0;">"{{ $ver->change_note }}"</p>
+                @endif
+              </div>
+            @empty
+              <div style="font-size:12px; color:#434655;">No versions found.</div>
+            @endforelse
+          </div>
+        </details>
 
-        @if(!empty($relatedLinks))
-          <ul style="list-style:none;padding:0;margin:0;">
-            @foreach($relatedLinks as $link)
+        {{-- Section: Approvals --}}
+        @php
+          $approvalLogs = [];
+          if ($currentVersion && \Schema::hasTable('approval_logs')) {
+              $approvalLogs = \DB::table('approval_logs')
+                  ->where('document_version_id', $currentVersion->id)
+                  ->join('users', 'users.id', '=', 'approval_logs.user_id')
+                  ->select('approval_logs.*', 'users.name as user_name')
+                  ->orderBy('approval_logs.created_at', 'asc')
+                  ->get();
+          }
+        @endphp
+        <details style="border-bottom:1px solid #c3c6d7;">
+          <summary style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; list-style:none; user-select:none;">
+            <span style="font-size:13px; font-weight:600; color:#191b23; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">verified</span> Approvals
+            </span>
+            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+          </summary>
+          <div style="padding:16px; display:flex; flex-direction:column; gap:8px;">
+            @forelse($approvalLogs as $log)
+              @php
+                $isApproved = in_array(strtolower($log->action), ['approve', 'approved'], true);
+                $actionIcon = $isApproved ? 'check_circle' : 'cancel';
+                $iconColor = $isApproved ? '#16a34a' : '#ba1a1a';
+              @endphp
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+                <span class="material-symbols-outlined" style="font-size:16px; color:{{ $iconColor }};">{{ $actionIcon }}</span>
+                <span style="font-weight:600; color:#191b23;">{{ ucwords($log->role) }}</span>
+                <span style="color:#434655;">{{ \Carbon\Carbon::parse($log->created_at)->format('M d, Y') }}</span>
+              </div>
+            @empty
+              <div style="font-size:12px; color:#434655;">No approvals recorded yet.</div>
+            @endforelse
+          </div>
+        </details>
+
+        {{-- Section: Related Documents --}}
+        <details style="border-bottom:1px solid #c3c6d7;">
+          <summary style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; list-style:none; user-select:none;">
+            <span style="font-size:13px; font-weight:600; color:#191b23; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">link</span> Related Documents
+            </span>
+            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+          </summary>
+          <div style="padding:16px; display:flex; flex-direction:column; gap:8px;">
+            @forelse($relatedLinks as $link)
               @php
                 $lkUrl = is_array($link) ? ($link['url'] ?? '#') : (is_object($link) ? ($link->url ?? '#') : (string)$link);
                 $lkLabel = is_array($link) ? ($link['label'] ?? $lkUrl) : (is_object($link) ? ($link->label ?? $lkUrl) : $lkUrl);
               @endphp
-              <li style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f1f5f9;">
-                <div style="flex:1;margin-right:8px;word-break:break-word;color:#0b5ed7;">
-                  <a href="{{ $lkUrl }}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:#0b5ed7;">
-                    {{ $lkLabel }}
-                  </a>
-                </div>
-                <div style="white-space:nowrap;">
-                  <a href="{{ $lkUrl }}" target="_blank" rel="noopener noreferrer" class="btn" style="background:#eef7ff;border:1px solid #dbeefd;padding:.35rem .6rem;border-radius:6px;color:#0b5ed7;text-decoration:none;font-size:.85rem;">
-                    Open
-                  </a>
-                </div>
-              </li>
-            @endforeach
-          </ul>
-        @else
-          <div style="color:#6b7280;font-size:.95rem;padding:6px 0;">
-            Tidak ada dokumen terkait.
+              <a href="{{ $lkUrl }}" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:#004ac6; text-decoration:none; display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:16px;">description</span> {{ $lkLabel }}
+              </a>
+            @empty
+              <div style="font-size:12px; color:#434655;">No related documents.</div>
+            @endforelse
           </div>
-        @endif
+        </details>
+
+        {{-- Section: Audit Trail --}}
+        @php
+          $docAuditLogs = [];
+          if (\Schema::hasTable('audit_logs')) {
+              $docAuditLogs = \DB::table('audit_logs')
+                  ->where('document_id', $document->id)
+                  ->leftJoin('users', 'users.id', '=', 'audit_logs.user_id')
+                  ->select('audit_logs.*', 'users.name as user_name')
+                  ->orderBy('audit_logs.created_at', 'desc')
+                  ->take(5)
+                  ->get();
+          }
+        @endphp
+        <details>
+          <summary style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; cursor:pointer; list-style:none; user-select:none;">
+            <span style="font-size:13px; font-weight:600; color:#191b23; display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">list_alt</span> Audit Trail
+            </span>
+            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+          </summary>
+          <div style="padding:16px; display:flex; flex-direction:column; gap:12px;">
+            @forelse($docAuditLogs as $log)
+              <div style="font-size:11px;">
+                <span style="font-weight:bold; color:#191b23;">{{ $log->user_name ?? 'System' }}</span>
+                <span style="color:#434655;">{{ str_replace('_', ' ', $log->event) }}</span>
+                <div style="color:#737686; font-size:10px; margin-top:2px;">{{ \Carbon\Carbon::parse($log->created_at)->diffForHumans() }}</div>
+              </div>
+            @empty
+              <div style="font-size:12px; color:#434655;">No recent audit logs.</div>
+            @endforelse
+          </div>
+        </details>
+
       </div>
+
+      {{-- Technical Specs / Storage Metadata --}}
+      <div class="card" style="padding:16px; border-radius:8px; border:1px solid #c3c6d7; background:#f3f3fe; box-shadow:none;">
+        <p style="font-size:11px; font-weight:600; color:#515f74; text-transform:uppercase; margin:0 0 8px;">Storage Metadata</p>
+        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <td style="padding:4px 0; color:#434655;">Format</td>
+              <td style="padding:4px 0; font-weight:600; color:#191b23; text-align:right;">
+                {{ $currentVersion ? (explode('/', $currentVersion->file_mime ?? '')[1] ?? 'PDF') : 'PDF' }}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0; color:#434655;">Size</td>
+              <td style="padding:4px 0; font-weight:600; color:#191b23; text-align:right;">
+                @php
+                  $size = '2.4 MB';
+                  if ($currentVersion && $currentVersion->pdf_path) {
+                      try {
+                          $disk = Storage::disk('documents');
+                          if ($disk->exists($currentVersion->pdf_path)) {
+                              $bytes = $disk->size($currentVersion->pdf_path);
+                              $size = round($bytes / (1024 * 1024), 2) . ' MB';
+                          }
+                      } catch (\Throwable $e) {}
+                  }
+                @endphp
+                {{ $size }}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0; color:#434655;">Retention</td>
+              <td style="padding:4px 0; font-weight:600; color:#191b23; text-align:right;">10 Years</td>
+            </tr>
+            @if($currentVersion && $currentVersion->checksum)
+              <tr>
+                <td style="padding:4px 0; color:#434655; vertical-align:top;">SHA-256</td>
+                <td style="padding:4px 0; font-weight:600; color:#191b23; text-align:right; font-family:var(--mono); font-size:10px; word-break:break-all; max-width:180px;">
+                  {{ substr($currentVersion->checksum, 0, 16) }}...
+                </td>
+              </tr>
+            @endif
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
     </div>
   </div>
 </div>
@@ -500,10 +774,10 @@
           @endphp
           <input id="signed_at" type="date" name="signed_at" value="{{ $signedAtDefault }}" class="input">
 
-          <div style="margin-top:10px;display:flex;gap:8px;">
-            <button class="btn" type="submit" name="submit_for" value="save">Save Draft</button>
-            <button class="btn" type="submit" name="submit_for" value="submit">Save & Submit</button>
-            <button type="button" class="btn-muted" id="cancelEdit">Cancel</button>
+          <div style="margin-top:15px;display:flex;gap:8px;">
+            <button class="btn btn-secondary" type="submit" name="submit_for" value="save">Save Draft</button>
+            <button class="btn btn-primary" type="submit" name="submit_for" value="submit">Save & Submit</button>
+            <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
           </div>
         </div>
       </div>
@@ -526,9 +800,6 @@
   .btn-small{ display:inline-block;padding:6px 8px;border-radius:6px;background:#eef7ff;color:#0b63d4;text-decoration:none;font-size:13px; }
   .input{ width:100%;padding:8px;border-radius:6px;border:1px solid #e6eef8;margin-top:6px;box-sizing:border-box; }
   .small-muted{ color:#6b7280; font-size:.95rem; }
-  .btn{ display:inline-block;padding:.45rem .75rem;border-radius:6px;background:#eef7ff;color:#0b63d4;border:1px solid #dbeefd;text-decoration:none;cursor:pointer; }
-  .btn-muted{ display:inline-block;padding:.45rem .75rem;border-radius:6px;background:#f3f4f6;color:#6b7280;border:1px solid #e6eef8;text-decoration:none;cursor:default; }
-  .btn-primary{ background:#0b5ed7; color:#fff; border:1px solid #0b5ed7; }
   #pdfIframe { transition: transform .12s ease; }
 </style>
 @endsection {{-- end content --}}

@@ -8,9 +8,9 @@
     <h2 class="h2">Draft Container</h2>
 
     <div style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
-        <a href="{{ route('drafts.index', ['filter' => 'draft']) }}" class="btn btn-muted" aria-pressed="{{ request('filter') === 'draft' ? 'true' : 'false' }}">Drafts</a>
-        <a href="{{ route('drafts.index', ['filter' => 'rejected']) }}" class="btn btn-muted" aria-pressed="{{ request('filter') === 'rejected' ? 'true' : 'false' }}">Rejected</a>
-        <a href="{{ route('documents.create') }}" class="btn">New Document</a>
+        <a href="{{ route('drafts.index', ['filter' => 'draft']) }}" class="btn btn-secondary" aria-pressed="{{ request('filter') === 'draft' ? 'true' : 'false' }}"><span class="material-symbols-outlined" style="font-size:18px;">draft</span> Drafts</a>
+        <a href="{{ route('drafts.index', ['filter' => 'rejected']) }}" class="btn btn-secondary" aria-pressed="{{ request('filter') === 'rejected' ? 'true' : 'false' }}"><span class="material-symbols-outlined" style="font-size:18px;">cancel</span> Rejected</a>
+        <a href="{{ route('documents.create') }}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:18px;">add</span> New Document</a>
     </div>
 
     <table class="table" role="table" aria-describedby="drafts-table">
@@ -28,12 +28,12 @@
         <tbody>
         @forelse($drafts as $v)
             <tr>
-                <td>{{ $v->document->doc_code ?? '-' }}</td>
+                <td style="font-family: var(--mono); white-space: nowrap;">{{ $v->document->doc_code ?? '-' }}</td>
                 <td>{{ $v->document->title ?? '-' }}</td>
                 <td>{{ $v->version_label }}</td>
                 <td>{{ $v->creator->name ?? '-' }}</td>
                 <td>
-                    <span class="badge {{ $v->status === 'rejected' ? 'badge-danger' : 'badge-warning' }}">
+                    <span class="status-badge {{ $v->status === 'rejected' ? 'status-rejected' : 'status-draft' }}">
                         {{ ucfirst($v->status) }}
                     </span>
                 </td>
@@ -47,23 +47,23 @@
                 </td>
 
                 <td>
-                    <a href="{{ route('drafts.show', $v->id) }}" class="btn btn-muted">Open</a>
+                    <a href="{{ route('drafts.show', $v->id) }}" class="btn btn-secondary"><span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span> Open</a>
 
                     @can('edit', $v)
-                        <a href="{{ route('drafts.edit', $v->id) }}" class="btn">Edit</a>
+                        <a href="{{ route('drafts.edit', $v->id) }}" class="btn btn-primary"><span class="material-symbols-outlined" style="font-size:16px;">edit</span> Edit</a>
                     @endcan
 
                     @if($v->status !== 'submitted')
                         {{-- Submit (POST) --}}
                         <form action="{{ route('drafts.submit', $v->id) }}" method="POST" style="display:inline">
                             @csrf
-                            <button class="btn btn-warning" type="submit" onclick="return confirm('Submit ke MR?')">Submit</button>
+                            <button class="btn btn-success" type="submit" onclick="return confirm('Submit ke MR?')"><span class="material-symbols-outlined" style="font-size:16px;">send</span> Submit</button>
                         </form>
 
                         {{-- Delete (keputusan: tetap POST supaya sesuai route yang ada) --}}
                         <form action="{{ route('drafts.destroy', $v->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus draft?')">
                             @csrf
-                            <button class="btn btn-muted" type="submit">Delete</button>
+                            <button class="btn btn-danger" type="submit"><span class="material-symbols-outlined" style="font-size:16px;">delete</span> Delete</button>
                         </form>
                     @endif
                 </td>
