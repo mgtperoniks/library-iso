@@ -564,39 +564,70 @@ class DocumentController extends Controller
 
     public function compare(Request $request, $documentId)
     {
-        $doc = Document::with('versions')->findOrFail($documentId);
+        $doc = Document::findOrFail($documentId);
+        $versions = $doc->versions()->orderByDesc('id')->get();
 
-        $versions = collect($request->query('versions', []))
-            ->flatten()
-            ->map(fn($v) => is_numeric($v) ? (int)$v : null)
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+        if ($versions->count() < 2) {
+            return back()->with('error', 'Dokumen ini belum punya 2 versi untuk dibandingkan.');
+        }
 
-        if (count($versions) < 2) {
-            $latest = $doc->versions()->orderByDesc('id')->take(2)->get();
-            if ($latest->count() < 2) {
-                return back()->with('error', 'Dokumen ini belum punya 2 versi untuk dibandingkan.');
+        $v1Id = $request->query('v1');
+        $v2Id = $request->query('v2');
+
+        if (empty($v1Id) || empty($v2Id)) {
+            // Default selection logic:
+            // Base (ver1): latest approved
+            $ver1 = $versions->where('status', 'approved')->first();
+            
+            // Target (ver2): latest non-approved / draft / pending
+            $targetStatuses = ['submitted', 'pending', 'in_progress', 'draft'];
+            $ver2 = $versions->filter(fn($v) => in_array(strtolower($v->status), $targetStatuses))->first();
+
+            // Fallbacks
+            if (!$ver1) {
+                $ver1 = $versions->last(); // oldest
             }
-            $ver1 = $latest->last();
-            $ver2 = $latest->first();
+            if (!$ver2) {
+                $ver2 = $versions->first(); // newest
+            }
+
+            if ($ver1->id === $ver2->id) {
+                $other = $versions->where('id', '<>', $ver1->id)->first();
+                if ($other) {
+                    $ver2 = $other;
+                }
+            }
+
+            // Ensure chronological order
+            if ($ver1->id > $ver2->id) {
+                $temp = $ver1;
+                $ver1 = $ver2;
+                $ver2 = $temp;
+            }
         } else {
-            $versionsData = DocumentVersion::whereIn('id', $versions)->where('document_id', $documentId)->orderBy('id')->get();
-            if ($versionsData->count() < 2) {
+            $v1 = DocumentVersion::where('id', $v1Id)->where('document_id', $documentId)->first();
+            $v2 = DocumentVersion::where('id', $v2Id)->where('document_id', $documentId)->first();
+
+            if (!$v1 || !$v2) {
                 return back()->with('error', 'Beberapa versi yang dipilih tidak ditemukan atau tidak valid.');
             }
-            $ver1 = $versionsData->first();
-            $ver2 = $versionsData->last();
+
+            if ($v1->id > $v2->id) {
+                $ver1 = $v2;
+                $ver2 = $v1;
+            } else {
+                $ver1 = $v1;
+                $ver2 = $v2;
+            }
         }
 
         $text1 = $ver1->plain_text ?: ($ver1->pasted_text ?: '(Tidak ada teks)');
         $text2 = $ver2->plain_text ?: ($ver2->pasted_text ?: '(Tidak ada teks)');
 
         $diff = $this->buildDiff($text1, $text2);
-        $selectedVersions = $versions;
+        $selectedVersions = [$ver1->id, $ver2->id];
 
-        return view('documents.compare', compact('doc', 'ver1', 'ver2', 'diff', 'selectedVersions'));
+        return view('documents.compare', compact('doc', 'ver1', 'ver2', 'diff', 'selectedVersions', 'versions'));
     }
 
     public function chooseCompare($versionId)
@@ -716,6 +747,28 @@ class DocumentController extends Controller
 
         $versions = $document->versions->sortByDesc('id')->values();
 
+        // Phase B2A datasets:
+        // 1. $versionHistory: sorted chronologically ascending by ID, no status filter
+        $versionHistory = $document->versions()->with('creator')->orderBy('id', 'asc')->get();
+
+        // 2. $revisionCandidate: latest version where status is draft, submitted, or rejected
+        $revisionCandidate = $document->versions()->with('creator')
+            ->whereIn('status', ['draft', 'submitted', 'rejected'])
+            ->orderByDesc('id')
+            ->first();
+
+        // 3. $auditLogs: approval logs from approval_logs table, ordered by ID desc
+        $auditLogs = collect();
+        if (Schema::hasTable('approval_logs')) {
+            $auditLogs = DB::table('approval_logs')
+                ->join('document_versions', 'approval_logs.document_version_id', '=', 'document_versions.id')
+                ->join('users', 'approval_logs.user_id', '=', 'users.id')
+                ->where('document_versions.document_id', $document->id)
+                ->select('approval_logs.*', 'users.name as user_name', 'document_versions.version_label')
+                ->orderByDesc('approval_logs.id')
+                ->get();
+        }
+
         $relatedLinks = $this->normalizeRelatedLinks($document);
 
         if ($version && (! property_exists($version,'signature') || $version->signature === null)) {
@@ -725,7 +778,15 @@ class DocumentController extends Controller
             $document->signature = (object)['signed_at'=>null,'signed_by'=>null];
         }
 
-        return view('documents.show', compact('document','versions','version','relatedLinks'));
+        return view('documents.show', compact(
+            'document',
+            'versions',
+            'version',
+            'relatedLinks',
+            'versionHistory',
+            'revisionCandidate',
+            'auditLogs'
+        ));
     }
 
     public function downloadVersion(DocumentVersion $version)

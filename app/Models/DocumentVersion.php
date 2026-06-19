@@ -30,6 +30,19 @@ class DocumentVersion extends Model
         'diff_summary'  => 'array',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (DocumentVersion $version) {
+            $latest = self::where('document_id', $version->document_id)
+                ->orderByDesc('id')
+                ->first();
+
+            if ($latest) {
+                $version->prev_version_id = $latest->id;
+            }
+        });
+    }
+
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'document_id');
@@ -110,19 +123,15 @@ class DocumentVersion extends Model
             if ($doc) {
                 if ($doc->current_version_id && $doc->current_version_id != $this->id) {
                     $old = self::find($doc->current_version_id);
-                    if ($old && ! in_array($old->status, ['approved','rejected','superseded'], true)) {
+                    if ($old && $old->status === 'approved') {
                         $old->status = 'superseded';
                         $old->save();
                     }
                 }
-                if (schemaHasColumn($doc->getTable(), 'current_version_id')) {
-                    $doc->current_version_id = $this->id;
-                } else {
+                if (\Illuminate\Support\Facades\Schema::hasColumn($doc->getTable(), 'current_version_id')) {
                     $doc->current_version_id = $this->id;
                 }
-                if (schemaHasColumn($doc->getTable(), 'revision_date')) {
-                    $doc->revision_date = $this->approved_at;
-                } else {
+                if (\Illuminate\Support\Facades\Schema::hasColumn($doc->getTable(), 'revision_date')) {
                     $doc->revision_date = $this->approved_at;
                 }
                 $doc->approved_by = $userId;
