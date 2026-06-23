@@ -53,7 +53,12 @@ class RecycleController extends Controller
                 'user_id'             => $user->id,
                 'document_id'         => $version->document_id,
                 'document_version_id' => $version->id,
-                'detail'              => json_encode(['note'=>'restored from recycle']),
+                'detail'              => json_encode([
+                    'doc_code'        => $version->document->doc_code ?? null,
+                    'document_title'  => $version->document->title ?? null,
+                    'version_label'   => $version->version_label ?? null,
+                    'action_summary'  => 'Restored version from Recycle Bin',
+                ]),
                 'ip' => $request->ip(),
             ]);
         }
@@ -134,7 +139,12 @@ class RecycleController extends Controller
                         'user_id'             => $user->id,
                         'document_id'         => $version->document_id,
                         'document_version_id' => $version->id,
-                        'detail'              => json_encode(['note'=>'permanently deleted']),
+                        'detail'              => json_encode([
+                            'doc_code'        => $doc->doc_code ?? null,
+                            'document_title'  => $doc->title ?? null,
+                            'version_label'   => $version->version_label ?? null,
+                            'action_summary'  => 'Permanently deleted version',
+                        ]),
                         'ip' => $request->ip(),
                     ]);
                 }

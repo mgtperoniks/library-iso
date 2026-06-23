@@ -69,28 +69,7 @@
           <td>{{ $e->version->version_label ?? '-' }}</td>
           <td>{{ $e->user->email ?? $e->user->name ?? '-' }}</td>
           <td>
-            @php
-              $detailText = '-';
-              if ($e->detail) {
-                  $decoded = is_string($e->detail) ? json_decode($e->detail, true) : $e->detail;
-                  if (is_array($decoded)) {
-                      $parts = [];
-                      foreach ($decoded as $key => $val) {
-                          if (is_array($val)) {
-                              $val = json_encode($val);
-                          } elseif (is_bool($val)) {
-                              $val = $val ? 'true' : 'false';
-                          }
-                          $parts[] = ucwords(str_replace('_', ' ', $key)) . ': ' . $val;
-                      }
-                      $detailText = implode(', ', $parts);
-                  } else {
-                      $detailText = (string)$e->detail;
-                  }
-              }
-              $short = Str::limit($detailText, 120);
-            @endphp
-            {{ $short ?: '-' }}
+            {{ $e->human_friendly_detail }}
           </td>
           <td>{{ $e->ip ?? '-' }}</td>
         </tr>

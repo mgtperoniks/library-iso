@@ -400,6 +400,14 @@
             Audit Trail
           </a>
         @endif
+
+        @if(auth()->user()->hasAnyRole(['admin','mr','director']))
+          <a href="{{ route('distribution.index') }}"
+             class="iso-nav-link {{ request()->routeIs('distribution.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">assignment_ind</span>
+            Distribution Register
+          </a>
+        @endif
       @endauth
 
       <a href="{{ route('recycle.index') }}"
@@ -565,6 +573,9 @@
     }
   })();
 </script>
+
+@yield('scripts')
+@stack('scripts')
 
 </body>
 </html>

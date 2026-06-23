@@ -10,6 +10,7 @@ class AuditLogController extends Controller
     public function index(Request $request)
     {
         $query = \App\Models\AuditLog::with(['user', 'document', 'version'])
+            ->whereNotIn('event', ['preview_pdf', 'download_pdf', 'download_master'])
             ->orderBy('created_at', 'desc');
 
         // Filter: Event
@@ -65,7 +66,7 @@ class AuditLogController extends Controller
                             $r->user->email ?? $r->user->name ?? '',
                             $r->document->doc_code ?? '',
                             $r->version->version_label ?? '',
-                            is_string($r->detail) ? $r->detail : json_encode($r->detail),
+                            $r->human_friendly_detail,
                             $r->ip,
                             $r->created_at,
                         ]);

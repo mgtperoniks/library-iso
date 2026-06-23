@@ -141,7 +141,12 @@ class DraftController extends Controller
                 'user_id'             => $user->id,
                 'document_id'         => $version->document_id,
                 'document_version_id' => $version->id,
-                'detail'              => json_encode(['from' => $oldStatus]),
+                'detail'              => json_encode([
+                    'doc_code'        => $version->document->doc_code ?? null,
+                    'document_title'  => $version->document->title ?? null,
+                    'version_label'   => $version->version_label ?? null,
+                    'action_summary'  => 'Moved version to Recycle Bin (Status Awal: ' . $oldStatus . ')',
+                ]),
                 'ip'                  => $request->ip(),
             ]);
         }
@@ -186,7 +191,12 @@ class DraftController extends Controller
                 'user_id'             => $user->id,
                 'document_id'         => $version->document_id,
                 'document_version_id' => $version->id,
-                'detail'              => json_encode(['note' => 'submitted from draft container']),
+                'detail'              => json_encode([
+                    'doc_code'        => $version->document->doc_code ?? null,
+                    'document_title'  => $version->document->title ?? null,
+                    'version_label'   => $version->version_label ?? null,
+                    'action_summary'  => 'Draft submitted for approval',
+                ]),
                 'ip'                  => $request->ip(),
             ]);
         }
@@ -231,7 +241,12 @@ class DraftController extends Controller
                 'user_id'             => $user->id,
                 'document_id'         => $version->document_id,
                 'document_version_id' => $version->id,
-                'detail'              => json_encode(['note' => 'reopened from recycle/rejected']),
+                'detail'              => json_encode([
+                    'doc_code'        => $version->document->doc_code ?? null,
+                    'document_title'  => $version->document->title ?? null,
+                    'version_label'   => $version->version_label ?? null,
+                    'action_summary'  => 'Draft reopened from recycle/rejected',
+                ]),
                 'ip'                  => $request->ip(),
             ]);
         }

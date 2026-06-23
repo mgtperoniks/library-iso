@@ -56,4 +56,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/approval-queue',   [ApprovalQueueController::class, 'index'])->name('approval.queue-legacy');
     Route::get('/revision-history', [RevisionHistoryController::class, 'index'])->name('revision.index');
     Route::get('/audit-log',        [AuditLogController::class, 'index'])->name('audit.index');
+    Route::get('/distribution-register', [App\Http\Controllers\DistributionRegisterController::class, 'index'])->name('distribution.index');
 });

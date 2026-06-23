@@ -187,48 +187,95 @@
   @endif
 
   {{-- Top Navigation & Actions Bar --}}
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:12px;">
     <div>
-      <div style="display:flex; align-items:center; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <code style="font-family: var(--mono-font); font-size:12px; background:#e0ebff; color:#0b63d4; border-radius:4px; padding: 3px 8px; font-weight: 700;">{{ $document->doc_code }}</code>
-        <h1 style="font-size:24px; font-weight:800; color:#1e293b; margin:0; display:inline-flex; align-items:center; gap:8px;">
+        <h1 style="font-size:24px; font-weight:800; color:#1e293b; margin:0; display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;">
           {{ $document->title }}
         </h1>
+        @if($revisionCandidate)
+          <span style="font-size: 11px; font-weight: 700; color: #b45309; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 9999px; padding: 3.5px 10px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 4px; vertical-align: middle;">
+            <span class="material-symbols-outlined" style="font-size: 14px;">pending</span> Draft Revision In Progress
+          </span>
+        @endif
       </div>
     </div>
+  </div>
 
-    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-      @if($canEditDocument)
-        <button class="btn btn-secondary" id="btnEditDoc" type="button" style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #cbd5e1; color:#475569; font-weight:600;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span> Edit Document</button>
-      @endif
+  {{-- Modernized Action Bar Container --}}
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; margin-bottom: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <!-- Left: Primary & Secondary Action Groups -->
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      
+      <!-- Primary Group -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        @if($canEditDocument)
+          <button class="btn" id="btnEditDoc" type="button" style="display: inline-flex; align-items: center; gap: 6px; background: #2563eb; color: #ffffff; font-weight: 600; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: background 0.2s;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">edit</span> Edit Metadata
+          </button>
+          
+          <a class="btn" href="{{ route('versions.create') }}?document_id={{ $document->id }}" style="display: inline-flex; align-items: center; gap: 6px; background: #059669; color: #ffffff; font-weight: 600; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; transition: background 0.2s;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span> Create Revision
+          </a>
+        @endif
 
-      @if($currentVersion && $masterAvailable && Route::has('documents.versions.downloadMaster'))
-        <a class="btn btn-secondary" href="{{ route('documents.versions.downloadMaster', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #cbd5e1; color:#475569;"><span class="material-symbols-outlined" style="font-size:18px;">article</span> Download Master</a>
-      @elseif($currentVersion && Route::has('documents.versions.download') && $currentVersion->file_path)
-        <a class="btn btn-secondary" href="{{ route('documents.versions.download', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #cbd5e1; color:#475569;"><span class="material-symbols-outlined" style="font-size:18px;">download</span> Download File</a>
-      @endif
+        @if(Route::has('documents.compare'))
+          <a class="btn" href="{{ route('documents.compare', $document->id ?? 0) }}" style="display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: background 0.2s;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">difference</span> Compare Engine
+          </a>
+        @endif
+      </div>
 
-      @if($currentVersion && $currentVersion->file_path && Route::has('documents.versions.download'))
-        <a class="btn btn-secondary" href="{{ route('documents.versions.download', $currentVersion->id) }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #cbd5e1; color:#475569;"><span class="material-symbols-outlined" style="font-size:18px;">picture_as_pdf</span> Download PDF</a>
-      @endif
+      <!-- Divider line -->
+      <div style="width: 1px; height: 28px; background: #e2e8f0;"></div>
 
-      @if(Route::has('documents.compare'))
-        <a class="btn btn-secondary" href="{{ route('documents.compare', $document->id ?? 0) }}" style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #cbd5e1; color:#475569;"><span class="material-symbols-outlined" style="font-size:18px;">difference</span> Compare Engine</a>
-      @endif
+      <!-- Secondary Group -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        @if($currentVersion && $currentVersion->file_path && Route::has('documents.versions.download'))
+          <a class="btn" href="{{ route('documents.versions.download', $currentVersion->id) }}" style="display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #cbd5e1; color: #475569; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: 500; font-size: 14px;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">picture_as_pdf</span> Download PDF
+          </a>
+        @endif
 
+        @if($currentVersion && $masterAvailable && Route::has('documents.versions.downloadMaster'))
+          <a class="btn" href="{{ route('documents.versions.downloadMaster', $currentVersion->id) }}" style="display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #cbd5e1; color: #475569; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: 500; font-size: 14px;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">article</span> Download Master
+          </a>
+        @endif
+      </div>
+      
+    </div>
+
+    <!-- Right: Danger Zone & Submit Actions -->
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
       @if($canShowSubmit && ! $isFinal && $currentVersion)
-        <form method="POST" action="{{ route('versions.submit', $submitVersionId) }}" style="display:inline;">
+        <form method="POST" action="{{ route('versions.submit', $submitVersionId) }}" style="display: inline;">
           @csrf
-          <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px; background:#004ac6; font-weight:600;"><span class="material-symbols-outlined" style="font-size:18px;">publish</span> Submit Approval</button>
+          <button type="submit" class="btn" style="display: inline-flex; align-items: center; gap: 6px; background: #004ac6; color: #ffffff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">publish</span> Submit Approval
+          </button>
         </form>
       @endif
 
       @if($canTrash && $currentVersion && Route::has('versions.trash'))
-        <form method="POST" action="{{ route('versions.trash', $currentVersion->id) }}" style="display:inline;" onsubmit="return confirm('Move this version to Recycle Bin?');">
+        <form method="POST" action="{{ route('versions.trash', $currentVersion->id) }}" style="display: inline;" onsubmit="return confirm('Move this version to Recycle Bin?');">
           @csrf
-          <button type="submit" class="btn btn-danger" style="display:inline-flex; align-items:center; gap:6px; background:#ba1a1a; font-weight:600;"><span class="material-symbols-outlined" style="font-size:18px;">delete</span> Delete Version</button>
+          <button type="submit" class="btn" style="display: inline-flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid #fecaca; color: #ba1a1a; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;">
+            <span class="material-symbols-outlined" style="font-size: 18px;">delete</span> Delete Version
+          </button>
         </form>
       @endif
+    </div>
+  </div>
+
+  {{-- Subtle Action Helper Legend --}}
+  <div style="margin-top: 0; margin-bottom: 24px; padding: 0 4px; display: flex; gap: 24px; font-size: 11px; color: #6b7280; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <span style="font-weight: 600; color: #4b5563;">Edit Metadata:</span> Perbarui informasi dokumen tanpa membuat revisi baru.
+    </div>
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <span style="font-weight: 600; color: #4b5563;">Create Revision:</span> Ajukan perubahan isi dokumen melalui workflow approval.
     </div>
   </div>
 
@@ -289,104 +336,7 @@
     {{-- LEFT COLUMN: Workspace, Content, Timeline, Logs --}}
     <div style="display:flex; flex-direction:column; gap:24px;">
 
-      {{-- STEP 3: REVISION WORKSPACE --}}
-      <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; box-shadow:0 4px 6px rgba(0,0,0,0.02); position:relative;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
-          <span class="material-symbols-outlined" style="color:#f59e0b; font-size:22px;">edit_document</span>
-          <h3 style="font-size:15px; font-weight:700; color:#1e293b; margin:0;">Revision Workspace</h3>
-        </div>
-
-        @if($revisionCandidate)
-          @php
-            $candStatus = strtolower($revisionCandidate->status);
-            $candBg = '#f8fafc';
-            $candBorder = '#cbd5e1';
-            $candBadgeClass = 'status-draft';
-            if ($candStatus === 'submitted') {
-                $candBg = '#eff6ff';
-                $candBorder = '#bfdbfe';
-                $candBadgeClass = 'status-review';
-            } elseif ($candStatus === 'rejected') {
-                $candBg = '#fef2f2';
-                $candBorder = '#fecaca';
-                $candBadgeClass = 'status-rejected';
-            }
-          @endphp
-
-          <div style="background:{{ $candBg }}; border:1px solid {{ $candBorder }}; border-radius:8px; padding:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
-              <div>
-                <span class="status-badge {{ $candBadgeClass }}" style="font-size:11px; padding:2px 8px; font-weight:700;">{{ ucfirst($revisionCandidate->status) }}</span>
-                <span style="font-size:12px; color:#64748b; margin-left:8px; font-weight:600;">Stage: <strong style="color:#334155;">{{ $revisionCandidate->approval_stage ?? 'KABAG' }}</strong></span>
-              </div>
-              <div style="font-size:12px; color:#64748b;">
-                Last Update: <strong>{{ $revisionCandidate->updated_at ? Carbon::parse($revisionCandidate->updated_at)->format('d M Y, H:i') : '-' }}</strong>
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:14px; font-size:13px;">
-              <div>
-                <span style="color:#64748b; display:block; margin-bottom:2px;">Created By</span>
-                <strong style="color:#334155;">{{ $revisionCandidate->creator->name ?? 'System' }}</strong>
-              </div>
-              <div>
-                <span style="color:#64748b; display:block; margin-bottom:2px;">Change Note</span>
-                <strong style="color:#334155;">{{ $revisionCandidate->change_note ?? '-' }}</strong>
-              </div>
-            </div>
-
-            {{-- Rejected Reason Box --}}
-            @if($candStatus === 'rejected')
-              <div style="background:#fff1f2; border:1px solid #fda4af; border-radius:6px; padding:12px; margin-bottom:14px; display:flex; gap:8px; align-items:flex-start;">
-                <span class="material-symbols-outlined" style="color:#e11d48; font-size:18px; margin-top:2px;">error</span>
-                <div>
-                  <span style="font-size:11px; text-transform:uppercase; color:#be123c; font-weight:700; display:block;">Rejection Reason</span>
-                  <p style="font-size:13px; color:#9f1239; margin:4px 0 0; font-style:italic;">"{{ $revisionCandidate->rejected_reason ?? 'Tidak ada alasan penolakan spesifik.' }}"</p>
-                </div>
-              </div>
-            @endif
-
-            {{-- Actions --}}
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
-              @if(Route::has('documents.compare'))
-                <a href="{{ route('documents.compare', $document->id) }}?v1={{ $document->current_version_id ?? '' }}&v2={{ $revisionCandidate->id }}" class="btn btn-secondary btn-sm" style="background:#fff; border:1px solid #cbd5e1; font-weight:600; padding:6px 12px; font-size:12px; color:#475569;">
-                  <span class="material-symbols-outlined" style="font-size:16px;">difference</span> Compare With Active
-                </a>
-              @endif
-              
-              @if($canEditDocument)
-                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('editModal').style.display='block'" style="background:#fff; border:1px solid #cbd5e1; font-weight:600; padding:6px 12px; font-size:12px; color:#475569;">
-                  <span class="material-symbols-outlined" style="font-size:16px;">edit</span> Edit Candidate
-                </button>
-              @endif
-
-              <a href="#audit-trail-panel" class="btn btn-secondary btn-sm" style="background:#fff; border:1px solid #cbd5e1; font-weight:600; padding:6px 12px; font-size:12px; color:#475569;">
-                <span class="material-symbols-outlined" style="font-size:16px;">list_alt</span> View Approval Logs
-              </a>
-
-              @if(($candStatus === 'draft' || $candStatus === 'rejected') && $canShowSubmit)
-                <form method="POST" action="{{ route('versions.submit', $revisionCandidate->id) }}" style="display:inline;">
-                  @csrf
-                  <button type="submit" class="btn btn-primary btn-sm" style="background:#004ac6; padding:6px 12px; font-size:12px; font-weight:600; border:none; color:#fff; display:inline-flex; align-items:center; gap:4px;">
-                    <span class="material-symbols-outlined" style="font-size:16px;">publish</span> Re-Submit
-                  </button>
-                </form>
-              @endif
-            </div>
-          </div>
-        @else
-          <div style="border:2px dashed #e2e8f0; border-radius:8px; padding:24px; text-align:center; background:#fafafa;">
-            <span class="material-symbols-outlined" style="font-size:36px; color:#94a3b8; margin-bottom:8px;">info</span>
-            <p style="font-size:14px; font-weight:600; color:#475569; margin:0 0 4px;">No active revision candidate.</p>
-            <p style="font-size:12px; color:#94a3b8; margin:0 0 16px;">Dokumen ini tidak memiliki revisi/draf baru yang sedang berjalan saat ini.</p>
-            @if($canEditDocument)
-              <a href="{{ route('versions.create') }}?document_id={{ $document->id }}" class="btn btn-primary btn-sm" style="background:#004ac6; display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:13px; padding:8px 16px; border:none;">
-                <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span> Create Revision
-              </a>
-            @endif
-          </div>
-        @endif
-      </div>
+      {{-- STEP 3: REVISION WORKSPACE REMOVED --}}
 
       {{-- PDF / Text Preview Container --}}
       <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:20px; box-shadow:0 4px 6px rgba(0,0,0,0.02);">
@@ -814,7 +764,7 @@
   </div>
 </div>
 
-{{-- Edit / Create Version Modal (fully preserved inputs) --}}
+{{-- Edit Metadata Modal --}}
 @if($canEditDocument)
   <div id="editModal"
        style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
@@ -823,7 +773,7 @@
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
       <h3 style="font-size:16px; font-weight:700; color:#1e293b; margin:0; display:flex; align-items:center; gap:6px;">
-        <span class="material-symbols-outlined" style="color:#004ac6;">edit</span> Edit Document & Draft Details
+        <span class="material-symbols-outlined" style="color:#004ac6;">edit</span> Edit Document Metadata
       </h3>
       <span class="material-symbols-outlined" style="cursor:pointer; color:#94a3b8;" onclick="document.getElementById('editModal').style.display='none'">close</span>
     </div>
@@ -860,12 +810,20 @@
           </select>
 
           {{-- Document code --}}
-          <label for="doc_code" style="font-size:12px; font-weight:600; color:#475569;">Document code</label>
-          <input id="doc_code" type="text" name="doc_code" value="{{ old('doc_code', $document->doc_code) }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;" placeholder="Kosongkan untuk auto-generate">
+          <label for="doc_code" style="font-size:12px; font-weight:600; color:#475569;">Kode Dokumen (Permanent)</label>
+          <input id="doc_code" type="text" value="{{ $document->doc_code }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:4px; background-color:#f1f5f9; color:#64748b; cursor:not-allowed; opacity:0.85;" readonly disabled>
+          <div style="font-size:11px; color:#64748b; margin-bottom:12px; line-height: 1.4;">
+            Kode dokumen merupakan identitas permanen dokumen dan tidak dapat diubah setelah dibuat.
+          </div>
 
           {{-- Title --}}
           <label for="title" style="font-size:12px; font-weight:600; color:#475569;">Title</label>
           <input id="title" type="text" name="title" value="{{ old('title', $document->title) }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;" required>
+        </div>
+
+        <div style="flex:1; min-width:260px;">
+          <input type="hidden" name="version_id" value="{{ old('version_id', optional($currentVersion)->id ?? '') }}">
+          <input type="hidden" name="version_label" value="{{ old('version_label', optional($currentVersion)->version_label ?? 'v1') }}">
 
           {{-- Department --}}
           <label for="department_id" style="font-size:12px; font-weight:600; color:#475569;">Department</label>
@@ -878,82 +836,45 @@
             @endforeach
           </select>
 
-          {{-- Change note --}}
-          <label for="change_note" style="font-size:12px; font-weight:600; color:#475569;">Change note (version)</label>
-          <input id="change_note" name="change_note" value="{{ old('change_note', optional($currentVersion)->change_note ?? '') }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;">
+          {{-- Review Frequency --}}
+          <label for="review_frequency" style="font-size:12px; font-weight:600; color:#475569; display:block; margin-top:4px;">Review Frequency (months)</label>
+          <input id="review_frequency" type="number" name="review_frequency" value="{{ old('review_frequency', $document->review_frequency) }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;">
 
-          {{-- Related links --}}
+          {{-- Next Review Date --}}
+          <label for="next_review_date" style="font-size:12px; font-weight:600; color:#475569; display:block; margin-top:4px;">Next Review Date</label>
           @php
-            $relatedDefault = old('related_links');
-            if ($relatedDefault === null) {
-                if (is_array($document->related_links)) {
-                    $relatedDefault = implode("\n", $document->related_links);
-                } elseif (is_string($document->related_links) && $document->related_links !== '') {
-                    $decoded = json_decode($document->related_links, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        $relatedDefault = implode("\n", $decoded);
-                    } else {
-                        $relatedDefault = $document->related_links;
-                    }
-                } else {
-                    $relatedDefault = '';
-                }
-            }
+            $nextReviewDefault = old('next_review_date') ?: ($document->next_review_date ? $document->next_review_date->format('Y-m-d') : '');
           @endphp
-          <label for="related_links" style="font-size:12px; font-weight:600; color:#475569;">Related Documents (One URL per line)</label>
-          <textarea id="related_links" name="related_links" rows="3" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; min-height:60px;">{{ $relatedDefault }}</textarea>
+          <input id="next_review_date" type="date" name="next_review_date" value="{{ $nextReviewDefault }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;">
         </div>
+      </div>
 
-        <div style="width:360px; min-width:220px;">
-          <input type="hidden" name="version_id" value="{{ old('version_id', optional($currentVersion)->id ?? '') }}">
+      {{-- Related links --}}
+      <div style="margin-top: 12px; margin-bottom: 20px;">
+        @php
+          $relatedDefault = old('related_links');
+          if ($relatedDefault === null) {
+              if (is_array($document->related_links)) {
+                  $relatedDefault = implode("\n", $document->related_links);
+              } elseif (is_string($document->related_links) && $document->related_links !== '') {
+                  $decoded = json_decode($document->related_links, true);
+                  if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                      $relatedDefault = implode("\n", $decoded);
+                  } else {
+                      $relatedDefault = $document->related_links;
+                  }
+              } else {
+                  $relatedDefault = '';
+              }
+          }
+        @endphp
+        <label for="related_links" style="font-size:12px; font-weight:600; color:#475569;">Related Documents (One URL per line)</label>
+        <textarea id="related_links" name="related_links" rows="3" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; min-height:60px;">{{ $relatedDefault }}</textarea>
+      </div>
 
-          {{-- Version label --}}
-          <label for="version_label" style="font-size:12px; font-weight:600; color:#475569;">Version label</label>
-          <input id="version_label" name="version_label" value="{{ old('version_label', optional($currentVersion)->version_label ?? 'v1') }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;" required>
-
-          {{-- Master file --}}
-          <label for="master_file" style="font-size:12px; font-weight:600; color:#475569;">Master file (.doc/.docx/.xls/.xlsx)</label>
-          <input id="master_file" type="file" name="master_file" accept=".doc,.docx,.xls,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" class="input" style="margin-top:4px; margin-bottom:4px;">
-          @php
-            $currMasterPath = optional($currentVersion)->master_path ?: optional($currentVersion)->file_path ?: '';
-            $currMasterExt = $currMasterPath ? strtolower(pathinfo($currMasterPath, PATHINFO_EXTENSION)) : '';
-            $masterAllowedExt = ['doc','docx','xls','xlsx'];
-          @endphp
-          @if($currMasterPath && in_array($currMasterExt, $masterAllowedExt, true))
-            <div class="small-muted" style="margin-bottom:12px; font-size:11px;">Current: {{ basename($currMasterPath) }}</div>
-          @endif
-
-          {{-- PDF file --}}
-          <label for="file" style="font-size:12px; font-weight:600; color:#475569; display:block; margin-top:8px;">Upload PDF (optional)</label>
-          <input id="file" type="file" name="file" accept="application/pdf" class="input" style="margin-top:4px; margin-bottom:4px;">
-          @if(optional($currentVersion)->file_path && Str::endsWith(strtolower(optional($currentVersion)->file_path), '.pdf') )
-            <div class="small-muted" style="margin-bottom:12px; font-size:11px;">Current: {{ basename(optional($currentVersion)->file_path) }}</div>
-          @endif
-
-          {{-- Pasted text --}}
-          <label for="pasted_text" style="font-size:12px; font-weight:600; color:#475569; display:block; margin-top:8px;">Paste Text Content (for QMS search)</label>
-          @php
-            $pastedForModal = old('pasted_text', optional($currentVersion)->pasted_text ?? optional($currentVersion)->plain_text ?? '');
-          @endphp
-          <textarea id="pasted_text" name="pasted_text" rows="5" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; min-height:80px;">{{ $pastedForModal }}</textarea>
-
-          {{-- Signed by / date --}}
-          <label for="signed_by" style="font-size:12px; font-weight:600; color:#475569; display:block; margin-top:8px;">Signed By</label>
-          <input id="signed_by" name="signed_by" value="{{ old('signed_by', optional($currentVersion)->signed_by ?? '') }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:12px;">
-
-          <label for="signed_at" style="font-size:12px; font-weight:600; color:#475569;">Signed Date</label>
-          @php
-            $signedAtOld = old('signed_at');
-            $signedAtDefault = $signedAtOld !== null ? $signedAtOld : (optional(optional($currentVersion)->signed_at)->format('Y-m-d') ?? '');
-          @endphp
-          <input id="signed_at" type="date" name="signed_at" value="{{ $signedAtDefault }}" class="input" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:4px; margin-bottom:16px;">
-
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-secondary" type="submit" name="submit_for" value="save" style="background:#64748b; font-size:13px; font-weight:600; color:#fff; border:none; padding:8px 14px;">Save Draft</button>
-            <button class="btn btn-primary" type="submit" name="submit_for" value="submit" style="background:#004ac6; font-size:13px; font-weight:600; color:#fff; border:none; padding:8px 14px;">Save & Submit</button>
-            <button type="button" class="btn btn-secondary" id="cancelEdit" style="background:#fff; border:1px solid #cbd5e1; color:#64748b; font-size:13px; font-weight:600; padding:8px 14px;">Cancel</button>
-          </div>
-        </div>
+      <div style="display:flex; gap:8px; justify-content: flex-end; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+        <button type="button" class="btn btn-secondary" id="cancelEdit" style="background:#fff; border:1px solid #cbd5e1; color:#64748b; font-size:13px; font-weight:600; padding:8px 14px; border-radius: 6px; cursor: pointer;">Cancel</button>
+        <button class="btn btn-primary" type="submit" name="submit_for" value="save" style="background:#004ac6; font-size:13px; font-weight:600; color:#fff; border:none; padding:8px 14px; border-radius: 6px; cursor: pointer;">Save Metadata</button>
       </div>
 
       @if ($errors->any())
@@ -995,6 +916,9 @@
 @endsection {{-- end content --}}
 
 @section('scripts')
+@once
+  <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+@endonce
 <script>
   (function () {
     // Modal controls
